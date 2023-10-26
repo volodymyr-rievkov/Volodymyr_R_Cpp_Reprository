@@ -11,6 +11,7 @@ char action;
 bool libraryExit = false;
 int bookNumber;
 bool isContinued;
+bool lever;
 void PrintLibraryInventoryandAvailibility(std::vector<std::string> books, std::vector<std::string> availibility)
 {
     std::cout << "----------Library Inventory----------" << std::endl;
