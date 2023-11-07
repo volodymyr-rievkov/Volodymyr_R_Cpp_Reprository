@@ -14,7 +14,7 @@ int main()
     cout << "n+++m: " << n1+++m1 << endl;
     cout << "n-->m: " << (n1-->m1) << endl;
     cout << "m-->n: " << (m1-->n1) << endl;
-    cout << "---------Double Result---------" << endl;
+    cout << "---------Float Result---------" << endl;
     cout << "n+++m: " << n2+++m2 << endl;
     cout << "n-->m: " << (n2-->m2) << endl;
     cout << "m-->n: " << (m2-->n2) << endl;
