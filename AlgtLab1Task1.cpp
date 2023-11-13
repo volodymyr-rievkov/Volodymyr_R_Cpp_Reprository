@@ -3,10 +3,10 @@ using namespace std;
 int main()
 {
     bool fail = false;
-    int H;
-    int M;
-    int h;
-    int m;
+    long long int H;
+    long long int M;
+    long long int h;
+    long long int m;
     cin >> H;
     cin >> M;
     for (int i = 0; i < 3; i++)
