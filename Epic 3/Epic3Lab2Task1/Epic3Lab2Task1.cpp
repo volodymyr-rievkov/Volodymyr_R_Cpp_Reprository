@@ -1,25 +1,19 @@
 #include<iostream>
 #include<cmath>
 using namespace std;
-double GetElementOfRowByNum(int num)
+double sum = 0;
+double GetSum(int n)
 {
-    double result = pow(num, 2)*exp(-sqrt(num));
-    return result;
-}
-double GetSumOfRowNums(int amountOfnums)
-{
-    double sum = 0;
-    for(int i = 1; i <= amountOfnums; i++)
+    if(n == 0)
     {
-        sum += GetElementOfRowByNum(i);
+        return 0;
     }
+    sum += pow(n, 2)*exp(-sqrt(n));
+    GetSum(n-1);
     return sum;
-}
-void PrintSumOf(int amountOfsum)
-{
-    cout << "Sum of "<< amountOfsum << " elements is " << GetSumOfRowNums(amountOfsum);
 }
 int main()
 {
-    PrintSumOf(7);
+    int n = 7;
+    cout << "Sum of " << n << " elements is: " << GetSum(n);
 }
