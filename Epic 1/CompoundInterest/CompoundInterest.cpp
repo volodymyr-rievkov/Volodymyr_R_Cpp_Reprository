@@ -4,12 +4,8 @@ using namespace std;
 int main()
 {
     string name;
-    double startAmount = 0;
-    double rate;
-    int years;
-    int compound;
-    double endAmount;
-    double generalAmount;
+    double startAmount = 0, rate = 0, endAmount = 0, generalAmount = 0;
+    int years = 0, compound = 0;
     printf("Enter your name: ");
     scanf("%s", &name);
     printf("Enter the principal amount: ");
