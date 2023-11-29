@@ -1,77 +1,128 @@
 #include<iostream>
-#include<vector>
-#include <functional>
 using namespace std;
-void* PrintSquare()
+int sideSize;
+void GetSideSize()
 {
-    cout << "Triangle";
-    return nullptr;
+    cout << "Enter size: ";
+    cin >> sideSize;
 }
-void* PrintRectangle()
+int ChoosePattern()
+{
+    int action;
+    do
+    {
+        cout << " 1 - Square\n 2 - Rectangle\n 3 - Triangle\n 4 - Pyramid\n 5 - Diamond\n 6 - Exit\nEnter number: ";
+        cin >> action;
+    } while (action != 1 && action != 2 && action != 3 && action != 4 && action != 5 && action != 6);
+    return action;
+}
+bool IsFilled()
+{
+    char choice;
+    bool isFilled;
+    do
+    {
+        cout << "Do you want to fill pattern(y/n): ";
+        cin >> choice;
+    } while (choice != 'y' && choice != 'n');
+    if(choice == 'y')
+    {
+        isFilled = true;
+    }
+    else
+    {
+        isFilled = false;
+    }
+    cout << endl;
+    return isFilled;
+}
+void PrintSquare()
+{
+    GetSideSize();
+    if(IsFilled())
+    {
+        for(int i = 0; i < sideSize; i++)
+        {
+            for(int y = 0; y < sideSize; y++)
+            {
+                cout << "* ";
+            }
+            cout << endl;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < sideSize; i++)
+        {
+            for(int y = 0; y < sideSize; y++)
+            {
+                if(y == 0 || i == 0 || y == sideSize - 1 || i == sideSize - 1)
+                {
+                    cout << "* ";
+                }
+                else
+                {
+                    cout << "  ";
+                }
+            }
+            cout << endl;
+        }
+    }  
+    cout << endl;
+}
+void PrintRectangle()
+{
+    int biggerSidesize = sideSize * 2;
+    GetSideSize();
+    if(IsFilled())
+    {
+        for(int i = 0; i < sideSize; i++)
+        {
+            for(int y = 0; y < biggerSidesize; y++)
+            {
+                cout << "* ";
+            }
+            cout << endl;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < sideSize; i++)
+        {
+            for(int y = 0; y < biggerSidesize; y++)
+            {
+                if(y == 0 || i == 0 || y == biggerSidesize - 1 || i == sideSize - 1)
+                {
+                    cout << "* ";
+                }
+                else
+                {
+                    cout << "  ";
+                }
+            }
+            cout << endl;
+        }
+    }  
+    cout << endl;
+
+}
+void PrintTriangle()
 {
     
-    return nullptr;
 }
-void* PrintTriangle()
+void PrintPyramid()
 {
     
-    return nullptr;
 }
-void* PrintPyramid()
+void PrintDiamond()
 {
     
-    return nullptr;
 }
-void* PrintDiamond()
+void Exit()
 {
-    
-    return nullptr;
+
 }
-void* Exit()
-{
-    return nullptr;
-}
-vector<void*> patterns {PrintSquare(), PrintRectangle(), PrintTriangle(), PrintPyramid(), PrintDiamond(), Exit()};
-// int ChoosePattern()
-// {
-//     int action;
-//     do
-//     {
-//         cout << " 1 - Square\n 2 - Rectangle\n 3 - Triangle\n 4 - Pyramid\n 5 - Diamond\n 6 - Exit\nEnter number: ";
-//         cin >> action;
-//     } while (action != 1 && action != 2 && action != 3 && action != 4 && action != 5 && action != 6);
-//     return action;
-// }
-// bool IsFilled()
-// {
-//     char choice;
-//     bool isFilled;
-//     do
-//     {
-//         cout << "Do you want to fill pattern(y/n): ";
-//         cin >> choice;
-//     } while (choice != 'y' && choice != 'n');
-//     if(choice == 'y')
-//     {
-//         isFilled = true;
-//     }
-//     else
-//     {
-//         isFilled = false;
-//     }
-//     return isFilled;
-// }
 int main()
 {
-    patterns[0];
-    // switch(ChoosePattern())
-    // {
-    //     case 1 : 
-    //     case 2 :
-    //     case 3 :
-    //     case 4 :
-    //     case 5 :
-    //     case 6 : break;
-    // }
-    
+    PrintRectangle();
 }
