@@ -1,12 +1,9 @@
 #include<iostream>
 #include<cmath>
 using namespace std;
-
-double sum = 0;
-
 double GetSum(int n)
 {
-
+    double sum = 0;
     if(n == 0)
     {
         return sum;
