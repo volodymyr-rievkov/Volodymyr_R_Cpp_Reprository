@@ -1,6 +1,7 @@
 #include<iostream>
 #include<cmath>
 using namespace std;
+
 double GetSum(int n)
 {
     double sum = 0;
