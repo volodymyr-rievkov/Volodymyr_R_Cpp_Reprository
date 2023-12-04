@@ -40,4 +40,5 @@ int main()
 {
     string str = get_string();
     cout << compress_string(str);
+    
 }
