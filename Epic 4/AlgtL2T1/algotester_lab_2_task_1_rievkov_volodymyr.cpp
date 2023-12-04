@@ -17,20 +17,6 @@ void fill_array(int* array, int size)
     }
 }
 
-void print_array(int* array, int size)
-{
-    cout << "Array[" << size << "] = {";
-    for(int i = 0; i < size; i++)
-    {
-        cout << array[i];
-        if(i != size - 1)
-        {
-            cout << ", ";
-        }
-    }
-    cout << "}" << endl;
-}
-
 int get_max_array_number(int* array, int size)
 {
     int max = 0;
@@ -83,6 +69,10 @@ void delete_array_number(int* array, int size, int number)
 
 int get_result(int* array, int size)
 {
+    if(size == 1)
+    {
+        return 0;
+    }
     int max = get_max_array_number(array, size);
     int min = get_min_array_number(array, size, max);
     int max_count = get_count_of_array_number(array, size, max);
