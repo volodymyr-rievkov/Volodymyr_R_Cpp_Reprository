@@ -7,7 +7,7 @@ int matrix[rows][columns];
 const int array_size = 2 * (rows * columns);
 int matrix_array[array_size];
 
-bool is_existed(int number)
+bool student_exists(int number)
 {
     for(int i = 0; i < rows; i++)
     {
@@ -35,7 +35,7 @@ void fill_matrix()
             {
                 cout << "Element[" << i << "][" << y << "] = ";
                 cin >> number;
-            } while (is_existed(number));
+            } while (student_exists(number));
             matrix[i][y] = number;
         }
     }
