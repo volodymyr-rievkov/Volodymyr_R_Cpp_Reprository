@@ -3,7 +3,15 @@
 using namespace std;
 
 const int students_amount = 30;
+const int grades_count = 20;;
 int counter = 0;
+
+struct Grades
+{
+    int math_register[grades_count];
+    int english_register[grades_count];
+    int history_register[grades_count];
+};
 
 struct Student
 {
@@ -12,49 +20,44 @@ struct Student
     int age;
     string study_email;
     int number;
+    Grades grades;
 };
 
 Student students[students_amount];
 
-string get_name()
+string set_name_value(string &name)
 {
-    string name;
     cout << "Enter name: ";
     cin >> name;
     return name;
 }
 
-string get_surname()
+string set_surname_value(string &surname)
 {
-    string surname;
     cout << "Enter surname: ";
     cin >> surname;
     return surname;
 }
 
-int get_age()
+int set_age_value(int &age)
 {
-    int age;
     cout << "Enter age: ";
     cin >> age;
     return age;
 }
 
-string convert_uppercase_to_lovercase(string str)
+string convert_uppercase_to_lowercase(string str)
 {
-    for(int i = 0; i < str.length(); i++)
-    {
-        str[i] = tolower(str[i]);
-    }
+    str[0] = tolower(str[0]);
     return str;
 }
 
-string generate_study_email(Student student)
+string generate_study_email(Student &student)
 {
-    return convert_uppercase_to_lovercase(student.name) + "." + convert_uppercase_to_lovercase(student.surname) + "@gmail.com";;
+    return convert_uppercase_to_lowercase(student.name) + "." + convert_uppercase_to_lowercase(student.surname) + "@gmail.com";;
 }
 
-void print_student(Student student)
+void print_student(Student &student)
 {
     cout << "-----Student №" << student.number << "-----" << endl;
     cout << "Name: " << student.name << endl;
@@ -76,14 +79,26 @@ void print_all_students()
     }
 }
 
-bool is_existed(string name, string surname)
+Student* find_student(string &name, string &surname)
 {
     for(int i = 0; i < students_amount; i++)
     {
         if(name == students[i].name && surname == students[i].surname)
         {
-            return true;
+            return &students[i];
         }
+    }
+    return nullptr;
+}
+
+bool student_exists(string &name, string &surname)
+{
+    for(int i = 0; i < students_amount; i++)
+    {
+        if(name == students[i].name && surname == students[i].surname)
+        {
+           return true;
+        }        
     }
     return false;
 }
@@ -91,6 +106,9 @@ bool is_existed(string name, string surname)
 void add_student()
 {
     int action;
+    string name;
+    string surname;
+    int age;
     do
     {
         cout << "Press [1] for manual filling or [2] for auto filling: ";
@@ -98,11 +116,9 @@ void add_student()
     } while (action != 1 && action != 2);
     if(action == 1)
     {
-        students[counter].name = get_name();
-        students[counter].surname = get_surname();
-        students[counter].age = get_age();
-        students[counter].study_email = generate_study_email(students[counter]);
-        students[counter].number = counter + 1;
+        set_name_value(name);
+        set_surname_value(surname);
+        set_age_value(age);
     }
     else
     {
@@ -122,13 +138,16 @@ void add_student()
         "Zimmerman", "Adams", "Brown", "Chavez", "Dixon"};
         do
         {
-            students[counter].name = names[rand() % 30];
-            students[counter].surname = surnames[rand() % 30];
-        } while (is_existed(students[counter].name, students[counter].surname));
-        students[counter].age = rand() % 13 + 7;
-        students[counter].study_email = generate_study_email(students[counter]);
-        students[counter].number = counter + 1;
+            name = names[rand() % 30];
+            surname = surnames[rand() % 30];
+        } while (student_exists(name, surname));
+        age = rand() % 13 + 7;
     }
+    students[counter].name = name;
+    students[counter].surname = surname;
+    students[counter].age = age;
+    students[counter].study_email = generate_study_email(students[counter]);
+    students[counter].number = counter + 1;
     counter++;  
     cout << endl;
 }
@@ -137,13 +156,60 @@ void delete_student()
 {
     string name;
     string surname;
+    int index;
     do
     {
-        name = get_name();
-        surname = get_surname();
-    } while (!is_existed(name, surname));
+        set_name_value(name);
+        set_surname_value(surname);
+    } while (!student_exists(name, surname));
+    Student* student = find_student(name, surname);
+    index = student->number - 1;
+    for(index; index < students_amount - 1; index++)
+    {
+        students[index] = students[index + 1];
+        if(students[index].number != index + 1)
+        {
+            students[index].number--;
+        }
+    }
+    counter--;
+}
 
-    
+void print_register(int *student_register)
+{
+    for(int i = 0; i < grades_count; i++)
+    {
+        if(student_register[i] > 12 || student_register[i] < 1)
+        {
+            break;
+        }
+        cout << "|" << student_register[i] << "| ";
+    }
+    cout << endl;
+}
+
+void print_student_grades(Student &student)
+{
+    cout << student.name << " " << student.surname << endl;
+    cout << "---Math ";
+    print_register(student.grades.math_register);
+    cout << "---English ";
+    print_register(student.grades.english_register);
+    cout << "---History ";
+    print_register(student.grades.history_register);
+    cout << "---Average grade ";
+}
+
+void print_all_students_grades()
+{
+    for(int i = 0; i < students_amount; i++)
+    {
+        if(students[i].name == "")
+        {
+            break;
+        }
+        print_student_grades(students[i]);
+    }
 }
 
 int main()
@@ -153,4 +219,5 @@ int main()
     add_student();
     add_student();
     print_all_students();
+    print_all_students_grades();
 }
