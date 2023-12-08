@@ -35,7 +35,7 @@ int get_min_array_number(int* array, int size, int max)
     int min = max;
     for(int i = 0; i < size; i++)
     {
-        if(array[i] < min && array[i] != -1)
+        if(array[i] < min && array[i] != 0)
         {
             min = array[i];
         }
@@ -51,9 +51,9 @@ int get_count_of_array_number(int* array, int size, int number)
         if(number == array[i])
         {
             count++;
-        } 
+        }
     }
-    return count;    
+    return count;
 }
 
 void delete_array_number(int* array, int size, int number)
@@ -62,17 +62,13 @@ void delete_array_number(int* array, int size, int number)
     {
         if(array[i] == number)
         {
-            array[i] = -1;
+            array[i] = 0;
         }
     }
 }
 
 int get_result(int* array, int size)
 {
-    if(size == 1)
-    {
-        return 0;
-    }
     int max = get_max_array_number(array, size);
     int min = get_min_array_number(array, size, max);
     int max_count = get_count_of_array_number(array, size, max);
@@ -103,4 +99,4 @@ int main()
     int a_road[size];
     fill_array(a_road, size);
     cout << get_result(a_road, size);
-}   
+}

@@ -32,6 +32,7 @@ void print_array(int* array)
         }
     }
     cout << "}" << endl;
+    cout << endl;
 }
 
 int get_k()
@@ -56,7 +57,7 @@ void print_array_at_range(int* array, int start)
         end_null = true;
     }
     int i;
-    cout << "Array[" << user_size << "] at range (" << start << ", " << end<< ")" << " = {";
+    cout << "Array[" << user_size << "] at range (" << start << ", " << end<< ") = {";
     for(i = start; i < user_size; i++)
     {
         cout << array[i];
@@ -78,6 +79,7 @@ void print_array_at_range(int* array, int start)
     }
     
     cout << "}" << endl;
+    cout << endl;
 }
 
 void sort_array_by_desc(int* array)
