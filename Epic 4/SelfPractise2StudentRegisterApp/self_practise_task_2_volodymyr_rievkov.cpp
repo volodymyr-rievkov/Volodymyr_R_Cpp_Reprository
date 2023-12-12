@@ -7,9 +7,9 @@ const int grades_amount = 20;
 const int max_grade = 5;
 const int min_grade = 1;
 const int subject_amount = 3;
-int student_counter = 0;
 string subjects[subject_amount] = {"Math   ", "English", "History"};
 bool exit_s_r = false;
+int student_counter = 0;
 
 struct Student
 {
