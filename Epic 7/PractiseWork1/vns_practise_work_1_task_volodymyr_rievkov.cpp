@@ -44,5 +44,4 @@ int main()
     {
         cout << "Error: Wrong side length" << endl;
     }
-
 }
