@@ -14,8 +14,8 @@ struct CoWorker
     char by_father[20];
     char job[20];
     int birth_year;
-    int salary;
-    int number;
+    int salary = 0;
+    int number = 0;
 };
 
 CoWorker workers_array[workers_amount];
@@ -92,20 +92,18 @@ void print_workers_file()
     file = fopen(file_name, "rb");
     if(file != nullptr)
     {
-        for(int i = 0; i < workers_amount; i++)
-        {
-            if(fread(&workers_array[i], sizeof(CoWorker), 1, file))
+        CoWorker worker;
+            while(fread(&worker, sizeof(CoWorker), 1, file))
             {
-                cout << "---Worker №" << workers_array[i].number << endl;
-                cout << " - Name: " << workers_array[i].name << endl;
-                cout << " - Surname: " << workers_array[i].surname << endl;
-                cout << " - Byfather: " << workers_array[i].by_father << endl;
-                cout << " - Job: " << workers_array[i].job << endl;
-                cout << " - Birth year: " << workers_array[i].birth_year << endl;
-                cout << " - Salary: " << workers_array[i].salary << endl;
+                cout << "---Worker №" << worker.number << endl;
+                cout << " - Name: " << worker.name << endl;
+                cout << " - Surname: " << worker.surname << endl;
+                cout << " - Byfather: " << worker.by_father << endl;
+                cout << " - Job: " << worker.job << endl;
+                cout << " - Birth year: " << worker.birth_year << endl;
+                cout << " - Salary: " << worker.salary << endl;
                 cout << endl;
-            }
-        }
+            }          
         fclose(file);   
     }
     else
@@ -121,24 +119,23 @@ void delete_worker(char* surname)
     {
         cout << endl; 
         int i;
+        int index;
         for(i = 0; i < workers_amount; i++)
         {
             if(strcmp(workers_array[i].surname, surname) == 0)
             {
-                memset(&workers_array[i].name, 0, sizeof(workers_array[i].name));
-                // for(i; i < workers_amount - 1; i++)
-                // {
-
-                // }
-                break; 
+                memset(&workers_array[i], 0, sizeof(CoWorker));
+                index = i;
+                for(index; index < workers_amount - 1; index++)
+                {
+                    workers_array[index] = workers_array[index + 1];
+                    workers_array[index].number--;    
+                }
             }
-        }
-        for(int i = 0; i < workers_amount; i++)
-        {
             if(strlen(workers_array[i].name) != 0)
             {
                 fwrite(&workers_array[i], sizeof(CoWorker), 1, file);
-            }     
+            } 
         }
         fclose(file);
     }
@@ -169,8 +166,11 @@ void add_worker_after_index()
         {
             if(strlen(workers_array[i].name) == 0)
             {
-                cout << "Enter index(" << i << " - " << workers_amount - 1 << "): ";
-                cin >> number;
+                do
+                {
+                    cout << "Enter index(" << i << " - " << workers_amount - 1 << "): ";
+                    cin >> number;
+                } while (number < i || number > workers_amount - 1);
                 break;
             }
         }
@@ -197,7 +197,7 @@ void add_worker_after_index()
                     cout << "Enter salary: ";
                     cin >> workers_array[i].salary;
                     cout << endl;
-                    workers_array[i].number = ++number;
+                    workers_array[i].number = number + 1;
                     break;
                 }  
             }
