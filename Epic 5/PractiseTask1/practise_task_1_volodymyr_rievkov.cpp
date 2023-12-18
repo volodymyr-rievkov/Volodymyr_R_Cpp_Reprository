@@ -1,17 +1,7 @@
 #include<iostream>
 using namespace std;
 
-FILE* file;
 const char* file_name = "text.txt";
-const char* content = "There are many variations of passages of Lorem Ipsum available,\n"
-                        "but the majority have suffered alteration in some form, by injected humour,\n"
-                        "or randomised words which don't look even slightly believable.\n"
-                        "If you are going to use a passage of Lorem Ipsum,\n"
-                        "you need to be sure there isn't anything embarrassing hidden in the middle of text.\n"
-                        "All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary,\n"
-                        "making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words,\n"
-                        "combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable.\n"
-                        "The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.";
 
 enum FileResult
 {
@@ -19,24 +9,39 @@ enum FileResult
     Failure
 };
 
+void set_content(string& content)
+{
+    cout << "Enter content to write to file: ";
+    getline(cin, content);
+}
+
 FileResult write_to_file(const char* file_name, const char* content)
 {
-    file = fopen(file_name, "wb");
+    FILE* file = fopen(file_name, "w");
     if(file == nullptr)
     {
         return Failure;
+        cout << "Error: Content writing is failed" << endl;
     }
     else
     {
-        fprintf(file, content);
-        fclose(file);
+        if(fprintf(file, content) < 0)
+        {
+            cout << "Error: File writing is failed" << endl;
+            return Failure;
+        }
+        if(fclose(file) != 0)
+        {
+            cout << "Error: File closing is failed" << endl;
+            return Failure;
+        }
         return Success;
     }
 }
 
 void print_file(const char* file_name)
 {
-    file = fopen(file_name, "r");
+    FILE* file = fopen(file_name, "r");
     if(file != nullptr)
     {
         cout << endl << "File content: " << endl << endl;
@@ -45,7 +50,7 @@ void print_file(const char* file_name)
         {
             cout << buffer;
         }
-        cout << endl;
+        cout << endl << endl;
         fclose(file);
     }
     else
@@ -56,13 +61,11 @@ void print_file(const char* file_name)
 
 int main()
 {
-    if(write_to_file(file_name, content) == Success)
+    string content;
+    set_content(content);
+    if(write_to_file(file_name, content.c_str()) == Success)
     {
         cout << endl << "Content is successfully written" << endl;
         print_file(file_name);
-    }
-    else
-    {
-        cout << "Error: Content writing is failed" << endl;
     }
 }
