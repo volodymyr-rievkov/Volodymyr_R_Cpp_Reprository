@@ -21,7 +21,7 @@ bool is_size_problems_with_str(char string[], int size)
     return false;
 }
 
-bool is_word_special(char string[])
+bool is_word_special(char* string)
 {
     bool result = true;
     for(int i = 0; i < strlen(string); i++)

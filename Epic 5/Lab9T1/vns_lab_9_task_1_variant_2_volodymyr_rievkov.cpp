@@ -2,8 +2,6 @@
 #include<string.h>
 using namespace std;
 
-FILE* file_1;
-FILE* file_2;
 const char* file_1_name = "file_1.txt";
 const char* file_2_name = "file_2.txt";
 const char* file_content = "Lorem Ipsum is simply dummy text of the printing and typesetting industry.\n"
@@ -17,11 +15,11 @@ const char* file_content = "Lorem Ipsum is simply dummy text of the printing and
 
 void init_file()
 {
-    file_1 = fopen(file_1_name, "w");
-    if(file_1 != nullptr)
+    FILE* file = fopen(file_1_name, "w");
+    if(file != nullptr)
     {
-        fprintf(file_1, file_content);
-        fclose(file_1);
+        fprintf(file, file_content);
+        fclose(file);
     }
     else
     {
@@ -29,9 +27,9 @@ void init_file()
     }
 }
 
-void print_file(FILE* file, const char* file_name)
+void print_file(const char* file_name)
 {
-    file = fopen(file_name, "r");
+    FILE* file = fopen(file_name, "r");
     if(file != nullptr)
     {
         char buffer[1024];
@@ -50,8 +48,8 @@ void print_file(FILE* file, const char* file_name)
 
 void add_a_strings_to_file(const char* file_1_name, const char* file_2_name)
 {
-    file_1 = fopen(file_1_name, "r");
-    file_2 = fopen(file_2_name, "w");
+    FILE* file_1 = fopen(file_1_name, "r");
+    FILE* file_2 = fopen(file_2_name, "w");
     if(file_1 != nullptr && file_2 != nullptr)
     {
         char first_line[1024];
@@ -71,12 +69,46 @@ void add_a_strings_to_file(const char* file_1_name, const char* file_2_name)
     }
 }
 
+int fget_words_count(const char* file_name)
+{
+    int count = 0;
+    FILE* file = fopen(file_name, "r");
+    if(file != nullptr)
+    {
+        char buffer[1024];
+        while(fgets(buffer, sizeof(buffer), file))
+        {
+            char* token;
+            token = strtok(buffer, " ");
+            if(token != nullptr)
+            {
+                count++;
+            }
+            while(token != nullptr)
+            {
+                token = strtok(nullptr, " ");
+                if(token != nullptr)
+                {
+                    count++;
+                }
+            }
+        }
+        fclose(file);
+    }
+    else
+    {
+        cout << "Error: File opening is failed" << endl;
+    }
+    return count;
+}
+
 int main()
 {
     init_file();
     cout << "File 1: " << endl;
-    print_file(file_1, file_1_name);
+    print_file(file_1_name);
     cout << "File 2: " << endl;
     add_a_strings_to_file(file_1_name, file_2_name);
-    print_file(file_2, file_2_name);
+    print_file(file_2_name);
+    cout << "Words count is " << fget_words_count(file_2_name) << endl;
 }
