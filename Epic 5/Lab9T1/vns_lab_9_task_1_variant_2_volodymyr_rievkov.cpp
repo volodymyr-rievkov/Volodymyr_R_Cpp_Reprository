@@ -1,5 +1,5 @@
 #include<iostream>
-#include<string>
+#include<string.h>
 using namespace std;
 
 FILE* file_1;
@@ -15,13 +15,13 @@ const char* file_content = "Lorem Ipsum is simply dummy text of the printing and
                             "and more recently with desktop publishing software like\n"
                             "Aldus PageMaker including versions of Lorem Ipsum.\0";
 
-void init_file(FILE* file, const char* file_name, const char* file_content)
+void init_file()
 {
-    file = fopen(file_name, "w");
-    if(file != nullptr)
+    file_1 = fopen(file_1_name, "w");
+    if(file_1 != nullptr)
     {
-        fprintf(file, file_content);
-        fclose(file);
+        fprintf(file_1, file_content);
+        fclose(file_1);
     }
     else
     {
@@ -34,11 +34,12 @@ void print_file(FILE* file, const char* file_name)
     file = fopen(file_name, "r");
     if(file != nullptr)
     {
-        // string line;
-        // while(getline(file, line))
-        // {
-        //     cout << line << endl;
-        // }
+        char buffer[1024];
+        while(fgets(buffer, sizeof(buffer), file))
+        {
+            cout << buffer;
+        }
+        cout << endl << endl;
         fclose(file);
     }
     else
@@ -47,13 +48,22 @@ void print_file(FILE* file, const char* file_name)
     }
 }
 
-void add_a_strings_to_file(FILE* file_1, const char* file_1_name, FILE* file_2, const char* file_2_name)
+void add_a_strings_to_file(const char* file_1_name, const char* file_2_name)
 {
     file_1 = fopen(file_1_name, "r");
     file_2 = fopen(file_2_name, "w");
     if(file_1 != nullptr && file_2 != nullptr)
     {
-        //while(fgets())
+        char first_line[1024];
+        while(fgets(first_line, sizeof(first_line), file_1))
+        {
+            if(first_line[0] == 'a' || first_line[0] == 'A')
+            {
+                fprintf(file_2, first_line);
+            }
+        }
+        fclose(file_1);
+        fclose(file_2);
     }
     else
     {
@@ -63,6 +73,10 @@ void add_a_strings_to_file(FILE* file_1, const char* file_1_name, FILE* file_2, 
 
 int main()
 {
-    init_file(file_1, file_1_name, file_content);
+    init_file();
+    cout << "File 1: " << endl;
     print_file(file_1, file_1_name);
+    cout << "File 2: " << endl;
+    add_a_strings_to_file(file_1_name, file_2_name);
+    print_file(file_2, file_2_name);
 }
