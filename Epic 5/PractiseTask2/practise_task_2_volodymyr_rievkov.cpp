@@ -1,7 +1,8 @@
 #include<iostream>
+#include<string.h>
 using namespace std;
 
-const char* file_from_name = "D:\\Programming\\C,C++Applications\\Epic 5\\PractiseTask2\\file_from.txt";
+const char* file_from_name = "file_from.txt";
 const char* file_to_name = "file_to.txt";
 
 enum FileResult
@@ -32,11 +33,6 @@ FileResult copy_file(const char* file_from_name, const char* file_to_name)
     char buffer[1024];
     while(fgets(buffer, sizeof(buffer), file_from))
     {
-        if (buffer[strlen(buffer) - 1] != '\n')
-        {
-            cout << "Error: File reading is failed" << endl;
-            return Failure;
-        }
         if(fprintf(file_to, buffer) < 0)
         {
             cout << "Error: File copying is failed" << endl;
