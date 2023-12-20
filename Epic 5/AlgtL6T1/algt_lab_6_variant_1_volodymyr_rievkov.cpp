@@ -1,52 +1,97 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+using namespace std;
 
-int main() {
-    int N, K;
-    const int alphabetSize = 26;
-    std::vector<int> letterCount(alphabetSize, 0);
+const int border_1 = 1;
+const int border_2 = 10e5;
 
-    std::cin >> N >> K;
+bool check_number(int number, int lower_bound, int upper_bound)
+{
+    return (number >= lower_bound && number <= upper_bound);
+}
 
-    for (int i = 0; i < N; ++i) {
-        std::string word;
-        std::cin >> word;
+void process_input(vector<string>& all_words_vector, vector<int>& word_count_vector, int N, int K)
+{
+    for (int i = 0; i < N; ++i)
+    {
+        string word;
+        cin >> word;
 
-        std::vector<bool> uniqueLetters(alphabetSize, false);
-
-        for (char letter : word) {
-            letter = std::tolower(letter);
-            uniqueLetters[letter - 'a'] = true;
+        for (int j = 0; j < word.size(); ++j)
+        {
+            word[j] = tolower(word[j]);
         }
 
-        if (std::count_if(uniqueLetters.begin(), uniqueLetters.end(), [](bool b) { return b; }) >= K) {
-            for (char letter : word) {
-                letter = std::tolower(letter);
-                ++letterCount[letter - 'a'];
+        int index = -1;
+        for (int j = 0; j < all_words_vector.size(); ++j)
+        {
+            if (all_words_vector[j] == word)
+            {
+                index = j;
+                break;
+            }
+        }
+
+        if (index != -1)
+        {
+            word_count_vector[index]++;
+        }
+        else
+        {
+            all_words_vector.push_back(word);
+            word_count_vector.push_back(1);
+        }
+    }
+}
+
+void print_sorted_result(const vector<string>& all_words_vector, const vector<int>& word_count_vector, int K)
+{
+    vector<char> sorted_chars;
+    for (int i = 0; i < all_words_vector.size(); ++i)
+    {
+        if (word_count_vector[i] >= K)
+        {
+            for (int j = 0; j < all_words_vector[i].size(); ++j)
+            {
+                sorted_chars.push_back(all_words_vector[i][j]);
             }
         }
     }
 
-    std::vector<char> resultLetters;
+    sort(sorted_chars.begin(), sorted_chars.end());
+    sorted_chars.erase(unique(sorted_chars.begin(), sorted_chars.end()), sorted_chars.end());
+    reverse(sorted_chars.begin(), sorted_chars.end());
 
-    for (int i = 0; i < alphabetSize; ++i) {
-        if (letterCount[i] >= K) {
-            resultLetters.push_back('a' + i);
+    if (!sorted_chars.empty())
+    {
+        cout << sorted_chars.size() << endl;
+
+        for (int i = 0; i < sorted_chars.size(); ++i)
+        {
+            cout << sorted_chars[i] << " ";
         }
+        cout << endl;
+    }
+    else
+    {
+        cout << "Empty!" << endl;
+    }
+}
+
+int main()
+{
+    int N, K;
+    cin >> N >> K;
+
+    if (!check_number(N, border_1, border_2) || !check_number(K, border_1, N))
+    {
+        return 0;
     }
 
-    std::sort(resultLetters.rbegin(), resultLetters.rend());
+    vector<string> all_words_vector;
+    vector<int> word_count_vector;
 
-    if (resultLetters.empty()) {
-        std::cout << "Empty!" << std::endl;
-    } else {
-        std::cout << resultLetters.size() << std::endl;
-        for (char letter : resultLetters) {
-            std::cout << letter << " ";
-        }
-        std::cout << std::endl;
-    }
-
-    return 0;
+    process_input(all_words_vector, word_count_vector, N, K);
+    print_sorted_result(all_words_vector, word_count_vector, K);
 }

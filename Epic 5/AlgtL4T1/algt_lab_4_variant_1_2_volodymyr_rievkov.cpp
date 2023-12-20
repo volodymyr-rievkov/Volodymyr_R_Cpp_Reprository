@@ -99,7 +99,8 @@ vector<int> set_union(vector<int>& vector_1, vector<int>& vector_2)
                 break;
             }
         }
-        if (!found) {
+        if (!found)
+        {
             union_result.push_back(vector_2[i]);
         }
     }
