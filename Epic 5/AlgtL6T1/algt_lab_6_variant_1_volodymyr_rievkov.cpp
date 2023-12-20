@@ -4,7 +4,7 @@
 using namespace std;
 
 const int border_1 = 1;
-const int border_2 = 10e5;
+const int border_2 = 100000;
 
 bool check_number(int number, int lower_bound, int upper_bound)
 {
