@@ -48,11 +48,11 @@ void process_input(vector<string>& all_words_vector, vector<int>& word_count_vec
 void print_sorted_result(const vector<string>& all_words_vector, const vector<int>& word_count_vector, int K)
 {
     vector<char> sorted_chars;
-    for (int i = 0; i < all_words_vector.size(); ++i)
+    for (int i = 0; i < all_words_vector.size(); i++)
     {
         if (word_count_vector[i] >= K)
         {
-            for (int j = 0; j < all_words_vector[i].size(); ++j)
+            for (int j = 0; j < all_words_vector[i].size(); j++)
             {
                 sorted_chars.push_back(all_words_vector[i][j]);
             }

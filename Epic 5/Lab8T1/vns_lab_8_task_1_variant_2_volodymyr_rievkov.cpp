@@ -92,7 +92,7 @@ void print_workers_file()
     file = fopen(file_name, "rb");
     if(file != nullptr)
     {
-        CoWorker worker;
+            CoWorker worker;
             while(fread(&worker, sizeof(CoWorker), 1, file))
             {
                 cout << "---Worker №" << worker.number << endl;
