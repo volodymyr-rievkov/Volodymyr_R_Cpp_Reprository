@@ -2,7 +2,8 @@
 using namespace std;
 
 const char* data_file_name = "data_file.txt";
-const char* key_file_name = "key_file";
+const char* key_file_name = "key_file.txt";
+int node_count = 0;
 
 struct Node
 {
@@ -39,8 +40,8 @@ void add_to_file(int data, int key)
 
 void remove_from_file(int data, int key)
 {
-    const char* temp_d_file_name = "temp_data_file";
-    const char* temp_k_file_name = "temp_key_file";
+    const char* temp_d_file_name = "temp_data_file.txt";
+    const char* temp_k_file_name = "temp_key_file.txt";
     FILE* d_file = fopen(data_file_name, "rb");
     FILE* k_file = fopen(key_file_name, "rb");
     FILE* temp_d_file = fopen(temp_d_file_name, "wb");
@@ -99,7 +100,7 @@ void print_list(const Node* head)
     const Node* current = head;
     if(current == nullptr)
     {
-        cout << "List is empty" << endl << endl;
+        cout << "List is empty";
     }
     else
     {
@@ -149,8 +150,7 @@ void add(Node*& head, int data, int key)
             last = last->next;
         }
         last->next = new_node;
-    }
-    add_to_file(data, key);
+    }  
     cout << "Element with data '" << data << "' and key '" << key << "' was successfully added" << endl << endl;
 }
 
@@ -226,6 +226,22 @@ void clear_list(Node*& head)
     cout << "List was successfully cleared" << endl << endl;
 }
 
+Node* reverse_list(Node* head) 
+{
+    Node* current = head;
+    Node* prev = nullptr;
+    Node* next = nullptr;
+    while (current != nullptr) 
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    head = prev;
+    return head;
+}
+
 void restore_list(Node*& head)
 {
     if(head != nullptr)
@@ -242,6 +258,8 @@ void restore_list(Node*& head)
         {
             add(head, f_data, f_key);
         }
+        cout << "List has been restored" << endl << endl;
+        head = reverse_list(head);
         if(fclose(d_file) != 0 || fclose(k_file) != 0)
         {
             cout << "Error: File closing is failed" << endl << endl;
@@ -255,21 +273,29 @@ void restore_list(Node*& head)
 
 int main()
 {
+    int data;
+    int key;
     Node* head = create_empty_linked_list();
-    int data = get_data();
-    int key = get_key();
-    add(head, data, key);
+    cout << "Enter element" << endl << endl;
     data = get_data();
     key = get_key();
     add(head, data, key);
+    add_to_file(data, key); 
+    cout << "Enter element" << endl << endl;
+    data = get_data();
+    key = get_key();
+    add(head, data, key);
+    add_to_file(data, key); 
     print_list(head);
+    cout << "Enter key to remove" << endl << endl;
     key = get_key();
     remove_by_key(head, key);
     print_list(head);
+    cout << "Enter key to add element before" << endl << endl;
     key = get_key();
-    cout << "New:" << endl;
+    cout << "New" << endl << endl;
     int new_data = get_data();
-    cout << "New:" << endl;
+    cout << "New" << endl << endl;
     int new_key = get_key();
     add_before_key(head, key, new_data, new_key);
     print_list(head);
@@ -277,6 +303,7 @@ int main()
     print_list(head);
     restore_list(head);
     print_list(head);
+    clear_list(head);
     remove(data_file_name);
     remove(key_file_name);
 }
