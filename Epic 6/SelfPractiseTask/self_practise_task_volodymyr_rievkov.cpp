@@ -16,19 +16,18 @@ void add(Node*& head, int number)
     Node* new_node = new Node;
     new_node->data = number;   
     new_node->next = nullptr;   
-
     if (head == nullptr) 
     {
         head = new_node;
     } 
     else 
     {
-        Node* last = head;
-        while (last->next != nullptr) 
+        Node* current = head;
+        while (current->next != nullptr) 
         {
-            last = last->next;
+            current = current->next;
         }
-        last->next = new_node;
+        current->next = new_node;
     }
 }
 
@@ -127,7 +126,8 @@ void restore_list(Node*& head)
     }
 }
 
-void swap_nodes_values(Node*& node_1, Node*& node_2) {
+void swap_nodes_values(Node*& node_1, Node*& node_2) 
+{
     int temp = node_1->data;
     node_1->data = node_2->data;
     node_2->data = temp;
@@ -167,7 +167,8 @@ void sort_list_by_desc(Node*& head)
     {
         return;
     }
-    do {
+    do 
+    {
         swapped = 0; 
         current = head;  
         while (current->next != last) 
@@ -227,6 +228,7 @@ void list_managment()
                 break;
             case 6: 
                 app_exit = true; 
+                remove(file_name);
                 break;
         }
     }
