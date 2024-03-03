@@ -51,7 +51,7 @@ void Character::set_name()
 void Character::set_super_power()
 {
     srand(time(0));
-    super_power = super_powers[rand() % 19];
+    super_power = super_powers[rand() % (sp_size - 1)];
     std::cout << "Your super power is: " << super_power << std::endl;
 }
 
