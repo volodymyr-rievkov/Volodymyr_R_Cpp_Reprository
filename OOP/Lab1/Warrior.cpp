@@ -8,7 +8,7 @@ Warrior::Warrior()
     set_damage(10);
     set_speed(2);
     set_replicas({"For honor and glory!",
-                "None can match my strength.",
+                "No one can match my strength.",
                 "I fear no enemy."});
 }
 
