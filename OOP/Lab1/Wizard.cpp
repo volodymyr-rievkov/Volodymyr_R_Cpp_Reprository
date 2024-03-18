@@ -3,6 +3,7 @@
 
 Wizard::Wizard()
 {
+    set_type("Wizard❂");
     set_name();
     set_health(40);
     set_damage(15);
@@ -54,9 +55,9 @@ void Wizard::print_super_powers()
 
 void Wizard::print_info()
 {
-    std::cout << "Wizard❂" << std::endl;
+    std::cout << get_type() << " " << get_name()  << std::endl;
     Character::print_info();
-    std::cout << " - Feature: " << super_powers.size() << " super powers" << std::endl;
+    std::cout << " - Feature: " << super_powers.size() << " " << feature << std::endl;
 }
 
 void Wizard::use_super_power()
@@ -86,6 +87,6 @@ void Wizard::use_super_power()
 
 void Wizard::scream()
 {
-    std::cout << "Wizard " << get_name() << " screamed: ";
+    std::cout << get_type() << " " << get_name() << " screamed: ";
     Character::scream();
 }

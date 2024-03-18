@@ -3,6 +3,7 @@
 
 Archer::Archer()
 {
+    set_type("Archer🏹");
     set_name();
     set_health(60);
     set_damage(6);
@@ -14,7 +15,7 @@ Archer::Archer()
 
 void Archer::scream()
 {
-    std::cout << "Archer " << get_name() << " screamed: ";
+    std::cout << get_type() << " " << get_name() << " screamed: ";
     Character::scream();
 }
 
@@ -30,7 +31,7 @@ void Archer::increase_speed()
 
 void Archer::print_info()
 {
-    std::cout << "Archer🏹" << std::endl;
+    std::cout << get_type() << " " << get_name() << std::endl;
     Character::print_info();
     std::cout << " - Feature: " << feature << ", when health is below 50%" << std::endl;
 }

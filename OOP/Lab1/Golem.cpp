@@ -3,6 +3,7 @@
 
 Golem::Golem()
 {
+    set_type("Golem🪨");
     set_name();
     set_health(100);
     set_damage(20);
@@ -14,13 +15,13 @@ Golem::Golem()
 
 void Golem::scream()
 {
-    std::cout << "Golem " << get_name() << " screamed: ";
+    std::cout << get_type() << " " << get_name() << " screamed: ";
     Character::scream();
 }
 
 void Golem::print_info()
 {
-    std::cout << "Golem🪨" << std::endl;
+    std::cout << get_type() << " " << get_name() << std::endl;
     Character::print_info();
-    std::cout << " - Feature: None" << std::endl; 
+    std::cout << " - Feature: " << feature << std::endl; 
 }

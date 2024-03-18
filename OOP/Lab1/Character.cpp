@@ -30,7 +30,6 @@ string Character::get_name()
 
 void Character::print_info()
 {
-    cout << " - Name: " << name << endl;
     cout << " - Health: " << health << endl;
     cout << " - Damage: " << damage << endl;
     cout << " - Speed: " << speed << endl;
@@ -45,5 +44,15 @@ void Character::scream()
 {
     srand(time(0));
     cout << replicas[rand() % replicas.size()] << endl;
+}
+
+void Character::set_type(string type)
+{
+    this->type = type;
+}
+
+string Character::get_type()
+{
+    return type;
 }
 

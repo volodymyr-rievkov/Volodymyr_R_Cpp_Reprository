@@ -3,23 +3,11 @@
 #include"Warrior.hpp"
 #include"Golem.hpp"
 #include"Archer.hpp"
+#include"Battelfield.hpp"
 
 int main()
 {
-    Wizard wz;
-    wz.print_info();
-    wz.print_super_powers();
-    wz.scream();
-    wz.use_super_power();
-    wz.print_info();
-    wz.print_super_powers();
-    Warrior wr;
-    wr.print_info();
-    wr.scream();
-    Golem g;
-    g.print_info();
-    g.scream();
-    Archer a;
-    a.print_info();
-    a.scream();
+    Battlefield b;
+    b.set_characters();
+
 }
