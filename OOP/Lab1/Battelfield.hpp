@@ -22,4 +22,7 @@ private:
     void set_characters();
     void set_players_amount();
     void print_players();
+    void set_random_current_player();
+    bool ask_feature();
+    void print_start();
 };

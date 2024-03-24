@@ -3,7 +3,7 @@
 
 Warrior::Warrior()
 {
-    set_type("Warrior⚔️");
+    set_type("Warrior⚔️ ");
     set_health(80);
     set_damage(10);
     set_speed(2);
@@ -12,18 +12,22 @@ Warrior::Warrior()
                 "I fear no enemy."});
 }
 
-void Warrior::damage_increase()
+void Warrior::print_info()
+{
+    Character::print_info();
+    std::cout << " - Feature: " << "Damage Increase" << ", when health is below 50%" << std::endl;
+}
+
+void Warrior::use_feature()
 {
     if(!feature_active)
     {
         damage += i_damage;
         std::cout << "Damage + " << i_damage << std::endl;
         feature_active = true;
-    }   
-}
-
-void Warrior::print_info()
-{
-    Character::print_info();
-    std::cout << " - Feature: " << "Damage Increase" << ", when health is below 50%" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error: Feature is already used." << std::endl;
+    } 
 }

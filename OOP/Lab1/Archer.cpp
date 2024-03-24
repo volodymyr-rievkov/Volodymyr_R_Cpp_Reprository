@@ -12,7 +12,13 @@ Archer::Archer()
                 "My arrows shall find their target."});
 }
 
-void Archer::increase_speed()
+void Archer::print_info()
+{
+    Character::print_info();
+    std::cout << " - Feature: " << "Speed increase" << ", when health is below 50%" << std::endl;
+}
+
+void Archer::use_feature()
 {
     if(!feature_active)
     {
@@ -20,10 +26,9 @@ void Archer::increase_speed()
         std::cout << "Speed + " << i_speed << std::endl;
         feature_active = true;
     }  
+    else
+    {
+        std::cout << "Error: Feature is already used." << std::endl;
+    }
 }
 
-void Archer::print_info()
-{
-    Character::print_info();
-    std::cout << " - Feature: " << "Speed increase" << ", when health is below 50%" << std::endl;
-}

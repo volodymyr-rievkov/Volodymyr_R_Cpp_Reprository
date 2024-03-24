@@ -18,7 +18,7 @@ private:
     std::vector<std::string> super_powers;
     void print_super_powers();
     void print_info() override;
-    void use_super_power();
+    void use_feature() override;
 public:
     Wizard();
 };

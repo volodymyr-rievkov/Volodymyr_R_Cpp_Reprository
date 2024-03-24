@@ -60,7 +60,7 @@ void Wizard::print_info()
     std::cout << " - Feature: " << super_powers.size() << " Super powers" << std::endl;
 }
 
-void Wizard::use_super_power()
+void Wizard::use_feature()
 {
     int super_power = 0;
     if(super_powers.size() != 0)

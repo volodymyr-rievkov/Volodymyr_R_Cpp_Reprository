@@ -8,9 +8,6 @@ private:
     std::string name;
     std::string type;
 protected:
-    int health = 0;
-    int damage = 0;
-    int speed = 0;
     std::vector<std::string> replicas;
     void set_type(std::string type);
     void set_health(int health);
@@ -19,8 +16,12 @@ protected:
     void set_replicas(std::vector<std::string> replicas);
     void scream();
 public:
+    int health = 0;
+    int damage = 0;
+    int speed = 0;
     std::string get_type(); 
     std::string get_name();
     void set_name(); 
     virtual void print_info(); 
+    virtual void use_feature() = 0;
 };

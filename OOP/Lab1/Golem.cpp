@@ -17,3 +17,7 @@ void Golem::print_info()
     Character::print_info();
     std::cout << " - Feature: " << "None" << std::endl; 
 }
+
+void Golem::use_feature()
+{
+}
