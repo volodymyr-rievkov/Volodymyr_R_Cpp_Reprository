@@ -4,7 +4,6 @@
 Warrior::Warrior()
 {
     set_type("Warrior⚔️");
-    set_name();
     set_health(80);
     set_damage(10);
     set_speed(2);
@@ -25,13 +24,6 @@ void Warrior::damage_increase()
 
 void Warrior::print_info()
 {
-    std::cout << get_type() << " " << get_name() << std::endl;
     Character::print_info();
-    std::cout << " - Feature: " << feature << ", when health is below 50%" << std::endl;
-}
-
-void Warrior::scream()
-{
-    std::cout << get_type() << " " << get_name() << " screamed: ";
-    Character::scream();
+    std::cout << " - Feature: " << "Damage Increase" << ", when health is below 50%" << std::endl;
 }

@@ -1,19 +1,25 @@
 #include<iostream>
-#include<List>
 #include"Character.hpp"
 #include"Archer.hpp"
 #include"Warrior.hpp"
 #include"Wizard.hpp"
 #include"Golem.hpp"
 
-class Battlefield : public Archer, public Golem, public Warrior, public Wizard
+class Battlefield
 {
 public:
     Battlefield();
-    void set_characters();
 private:
     int players_amount = 0;
-    const std::list<std::string> characters = {Archer::get_type(), Golem::get_type(), Warrior::get_type(), Wizard::get_type()};
-    const std::list<Character> players;
+    const int min_players_amount = 2;
+    const int max_players_amount = 6;
+    Character* current_player = nullptr;
+    const std::vector<Character*> characters = {new Archer(), new Golem(), new Warrior(), new Wizard()};
+    std::vector<Character*> players;
+    void print_characters();
+    int get_choice(int start_limit, int end_limit);
+    void start();
+    void set_characters();
     void set_players_amount();
+    void print_players();
 };

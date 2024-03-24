@@ -7,7 +7,5 @@
 
 int main()
 {
-    Battlefield b;
-    b.set_characters();
-
+    Battlefield();
 }

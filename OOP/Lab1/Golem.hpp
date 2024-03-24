@@ -4,9 +4,7 @@
 class Golem : public Character
 {
 private:
-    const std::string feature = "None";
+    void print_info() override;
 public:
     Golem();
-    void scream() override;
-    void print_info() override;
 };

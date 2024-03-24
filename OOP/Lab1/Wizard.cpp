@@ -4,7 +4,6 @@
 Wizard::Wizard()
 {
     set_type("Wizard❂");
-    set_name();
     set_health(40);
     set_damage(15);
     set_speed(1);
@@ -42,6 +41,8 @@ void Wizard::init_funcs_vector()
     super_powers.push_back("Fire Aspect");
     super_powers_funcs.push_back(std::bind(&Wizard::wrath_of_heaven, this));
     super_powers.push_back("Wrath Of Heaven");
+    super_powers_funcs.shrink_to_fit();
+    super_powers.shrink_to_fit();
 }
 
 void Wizard::print_super_powers()
@@ -55,9 +56,8 @@ void Wizard::print_super_powers()
 
 void Wizard::print_info()
 {
-    std::cout << get_type() << " " << get_name()  << std::endl;
     Character::print_info();
-    std::cout << " - Feature: " << super_powers.size() << " " << feature << std::endl;
+    std::cout << " - Feature: " << super_powers.size() << " Super powers" << std::endl;
 }
 
 void Wizard::use_super_power()
@@ -83,10 +83,4 @@ void Wizard::use_super_power()
     {
         std::cout << "Super powers are not availible" << std::endl;
     }
-}
-
-void Wizard::scream()
-{
-    std::cout << get_type() << " " << get_name() << " screamed: ";
-    Character::scream();
 }
