@@ -31,7 +31,7 @@ string Character::get_name()
 void Character::print_info()
 {
     cout << get_type() << " " << get_name() << std::endl;
-    cout << " - Health: " << health << endl;
+    cout << " - Health: " << health << "/" << max_health << endl;
     cout << " - Damage: " << damage << endl;
     cout << " - Speed: " << speed << endl;
 }
@@ -59,3 +59,12 @@ string Character::get_type()
     return type;
 }
 
+void Character::set_max_health(int health)
+{
+    max_health = health;
+}
+
+int Character::get_max_health()
+{
+    return max_health;
+}

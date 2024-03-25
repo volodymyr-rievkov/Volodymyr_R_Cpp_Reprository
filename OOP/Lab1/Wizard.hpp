@@ -19,6 +19,7 @@ private:
     void print_super_powers();
     void print_info() override;
     void use_feature() override;
+    void print_death() override;
 public:
     Wizard();
 };

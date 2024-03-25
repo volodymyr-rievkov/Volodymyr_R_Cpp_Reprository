@@ -5,6 +5,7 @@ Warrior::Warrior()
 {
     set_type("Warrior⚔️ ");
     set_health(80);
+    set_max_health(health);
     set_damage(10);
     set_speed(2);
     set_replicas({"For honor and glory!",
@@ -20,14 +21,24 @@ void Warrior::print_info()
 
 void Warrior::use_feature()
 {
-    if(!feature_active)
-    {
-        damage += i_damage;
-        std::cout << "Damage + " << i_damage << std::endl;
-        feature_active = true;
-    }
-    else
-    {
-        std::cout << "Error: Feature is already used." << std::endl;
-    } 
+    damage += i_damage;
+    std::cout << get_type() << " " << get_name() << "' " "feature has been used." << std::endl;
+    std::cout << "Damage + " << i_damage << std::endl << std::endl;
+    feature_active = true;
+}
+
+void Warrior::print_death()
+{
+    std::cout << R"(
+ █     █░ ▄▄▄       ██▀███   ██▓ ▒█████   ██▀███      ██▓  ██████    ▓█████▄ ▓█████ ▄▄▄      ▓█████▄ 
+▓█░ █ ░█░▒████▄    ▓██ ▒ ██▒▓██▒▒██▒  ██▒▓██ ▒ ██▒   ▓██▒▒██    ▒    ▒██▀ ██▌▓█   ▀▒████▄    ▒██▀ ██▌
+▒█░ █ ░█ ▒██  ▀█▄  ▓██ ░▄█ ▒▒██▒▒██░  ██▒▓██ ░▄█ ▒   ▒██▒░ ▓██▄      ░██   █▌▒███  ▒██  ▀█▄  ░██   █▌
+░█░ █ ░█ ░██▄▄▄▄██ ▒██▀▀█▄  ░██░▒██   ██░▒██▀▀█▄     ░██░  ▒   ██▒   ░▓█▄   ▌▒▓█  ▄░██▄▄▄▄██ ░▓█▄   ▌
+░░██▒██▓  ▓█   ▓██▒░██▓ ▒██▒░██░░ ████▓▒░░██▓ ▒██▒   ░██░▒██████▒▒   ░▒████▓ ░▒████▒▓█   ▓██▒░▒█████ 
+░ ▓░▒ ▒   ▒▒   ▓▒█░░ ▒▓ ░▒▓░░▓  ░ ▒░▒░▒░ ░ ▒▓ ░▒▓░   ░▓  ▒ ▒▓▒ ▒ ░    ▒▒▓  ▒ ░░ ▒░ ░▒▒   ▓▒█░ ▒▒▓  ▒ 
+  ▒ ░ ░    ▒   ▒▒ ░  ░▒ ░ ▒░ ▒ ░  ░ ▒ ▒░   ░▒ ░ ▒░    ▒ ░░ ░▒  ░ ░    ░ ▒  ▒  ░ ░  ░ ▒   ▒▒ ░ ░ ▒  ▒ 
+  ░   ░    ░   ▒     ░░   ░  ▒ ░░ ░ ░ ▒    ░░   ░     ▒ ░░  ░  ░      ░ ░  ░    ░    ░   ▒    ░ ░  ░ 
+    ░          ░  ░   ░      ░      ░ ░     ░         ░        ░        ░       ░  ░     ░  ░   ░    
+                                                                      ░                       ░      
+    )" << std::endl << std::endl;
 }

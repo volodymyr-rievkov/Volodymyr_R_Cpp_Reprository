@@ -3,8 +3,9 @@
 
 Wizard::Wizard()
 {
-    set_type("Wizard❂");
+    set_type("Wizard❂ ");
     set_health(40);
+    set_max_health(health);
     set_damage(15);
     set_speed(1);
     init_funcs_vector();
@@ -29,7 +30,7 @@ void Wizard::wrath_of_heaven()
 {
     damage += wrath_o_h;
     health -= wrath_o_h;
-    std::cout << "Health +" << wrath_o_h << std::endl;
+    std::cout << "Health -" << wrath_o_h << std::endl;
     std::cout << "Damage +" << wrath_o_h << std::endl;
 }
 
@@ -63,24 +64,37 @@ void Wizard::print_info()
 void Wizard::use_feature()
 {
     int super_power = 0;
-    if(super_powers.size() != 0)
+    do
     {
-        do
+        print_super_powers();
+        std::cout << "Enter super power number: ";
+        std::cin >> super_power;
+        if(super_power < 1 || super_power > super_powers.size())
         {
-            print_super_powers();
-            std::cout << "Enter super power number: ";
-            std::cin >> super_power;
-            if(super_power < 1 || super_power > super_powers.size())
-            {
-                std::cout << "Error: Super power number is out of range." << std::endl;
-            }
-        } while (super_power < 1 || super_power > super_powers.size());
-        super_powers_funcs[super_power - 1]();
-        std::cout << super_powers[super_power - 1] << " has been used." << std::endl;
-        super_powers.erase(super_powers.begin() + (super_power - 1));
-    }
-    else
+            std::cout << "Error: Super power number is out of range." << std::endl;
+        }
+    } while (super_power < 1 || super_power > super_powers.size());
+    super_powers_funcs[super_power - 1]();
+    std::cout << super_powers[super_power - 1] << " has been used." << std::endl;
+    super_powers.erase(super_powers.begin() + (super_power - 1));
+    if(super_powers.empty())
     {
-        std::cout << "Super powers are not availible" << std::endl;
+        feature_active = true;
     }
+}
+
+void Wizard::print_death()
+{
+    std::cout << R"(
+ █     █░ ██▓▒███████▒ ▄▄▄       ██▀███  ▓█████▄     ██▓  ██████    ▓█████▄ ▓█████ ▄▄▄      ▓█████▄ 
+▓█░ █ ░█░▓██▒▒ ▒ ▒ ▄▀░▒████▄    ▓██ ▒ ██▒▒██▀ ██▌   ▓██▒▒██    ▒    ▒██▀ ██▌▓█   ▀▒████▄    ▒██▀ ██▌
+▒█░ █ ░█ ▒██▒░ ▒ ▄▀▒░ ▒██  ▀█▄  ▓██ ░▄█ ▒░██   █▌   ▒██▒░ ▓██▄      ░██   █▌▒███  ▒██  ▀█▄  ░██   █▌
+░█░ █ ░█ ░██░  ▄▀▒   ░░██▄▄▄▄██ ▒██▀▀█▄  ░▓█▄   ▌   ░██░  ▒   ██▒   ░▓█▄   ▌▒▓█  ▄░██▄▄▄▄██ ░▓█▄   ▌
+░░██▒██▓ ░██░▒███████▒ ▓█   ▓██▒░██▓ ▒██▒░▒████▓    ░██░▒██████▒▒   ░▒████▓ ░▒████▒▓█   ▓██▒░▒█████ 
+░ ▓░▒ ▒  ░▓  ░▒▒ ▓░▒░▒ ▒▒   ▓▒█░░ ▒▓ ░▒▓░ ▒▒▓  ▒    ░▓  ▒ ▒▓▒ ▒ ░    ▒▒▓  ▒ ░░ ▒░ ░▒▒   ▓▒█░ ▒▒▓  ▒ 
+  ▒ ░ ░   ▒ ░░░▒ ▒ ░ ▒  ▒   ▒▒ ░  ░▒ ░ ▒░ ░ ▒  ▒     ▒ ░░ ░▒  ░ ░    ░ ▒  ▒  ░ ░  ░ ▒   ▒▒ ░ ░ ▒  ▒ 
+  ░   ░   ▒ ░░ ░ ░ ░ ░  ░   ▒     ░░   ░  ░ ░  ░     ▒ ░░  ░  ░      ░ ░  ░    ░    ░   ▒    ░ ░  ░ 
+    ░     ░    ░ ░          ░  ░   ░        ░        ░        ░        ░       ░  ░     ░  ░   ░    
+             ░                            ░                          ░                       ░      
+    )" << std::endl << std::endl;
 }
