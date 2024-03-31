@@ -1,5 +1,5 @@
 #pragma once
-#include <iostream>
+#include<iostream>
 
 template<typename key_type, typename value_type>
 class Map 
@@ -10,8 +10,7 @@ private:
         key_type key;
         value_type value;
         Node* next;
-        
-        Node(const key_type& key, const value_type& value);
+        Node(const key_type& key, const value_type& value, Node* node);
     };
     Node* head;
 public:
@@ -21,5 +20,4 @@ public:
     value_type* search(const key_type& key);
     void remove(const key_type& key);
     void clear();
-    void print();
 };
