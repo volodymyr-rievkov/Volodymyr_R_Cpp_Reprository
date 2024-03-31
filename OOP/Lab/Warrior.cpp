@@ -21,14 +21,19 @@ void Warrior::print_info()
 
 void Warrior::use_feature()
 {
-    damage += i_damage;
-    std::cout << get_type() << " " << get_name() << "' " "feature has been used." << std::endl;
-    std::cout << "Damage + " << i_damage << std::endl << std::endl;
-    feature_active = true;
+    if(!feature_active && health < get_max_health() / 2)
+    {
+        damage += i_damage;
+        std::cout << get_type() << " " << get_name() << "' " "feature has been used." << std::endl;
+        std::cout << "Damage + " << i_damage << std::endl;
+        feature_active = true;
+    }
+    
 }
 
 void Warrior::print_death()
 {
+    std::cout << get_type() << " " << get_name() << ": "<< "I fought bravely... but it's not enough." << std::endl;
     std::cout << R"(
  █     █░ ▄▄▄       ██▀███   ██▓ ▒█████   ██▀███      ██▓  ██████    ▓█████▄ ▓█████ ▄▄▄      ▓█████▄ 
 ▓█░ █ ░█░▒████▄    ▓██ ▒ ██▒▓██▒▒██▒  ██▒▓██ ▒ ██▒   ▓██▒▒██    ▒    ▒██▀ ██▌▓█   ▀▒████▄    ▒██▀ ██▌

@@ -25,6 +25,7 @@ void Golem::use_feature()
 
 void Golem::print_death()
 {
+    std::cout << get_type() << " " << get_name() << ": "<< "My form crumbles, but my spirit endures... until my final breath." << std::endl;
     std::cout << R"(
   ▄████  ▒█████   ██▓    ▓█████  ███▄ ▄███▓    ██▓  ██████    ▓█████▄ ▓█████ ▄▄▄      ▓█████▄    
  ██▒ ▀█▒▒██▒  ██▒▓██▒    ▓█   ▀ ▓██▒▀█▀ ██▒   ▓██▒▒██    ▒    ▒██▀ ██▌▓█   ▀▒████▄    ▒██▀ ██▌   

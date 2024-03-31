@@ -30,8 +30,7 @@ void Wizard::wrath_of_heaven()
 {
     damage += wrath_o_h;
     health -= wrath_o_h;
-    std::cout << "Health -" << wrath_o_h << std::endl;
-    std::cout << "Damage +" << wrath_o_h << std::endl;
+    std::cout << "Health -" << wrath_o_h << std::endl << "Damage +" << wrath_o_h << std::endl;
 }
 
 void Wizard::init_funcs_vector()
@@ -63,28 +62,46 @@ void Wizard::print_info()
 
 void Wizard::use_feature()
 {
-    int super_power = 0;
-    do
+    if(!feature_active)
     {
-        print_super_powers();
-        std::cout << "Enter super power number: ";
-        std::cin >> super_power;
-        if(super_power < 1 || super_power > super_powers.size())
+        std::cout << "Do you want to use feature?\n 1 - Yes\n 2 - No\n: ";
+        int choice = 0;
+        do
         {
-            std::cout << "Error: Super power number is out of range." << std::endl;
+            std::cout << "Enter number: ";
+            std::cin >> choice;
+            if(choice < 1 || choice > 2)
+            {
+                std::cout << "Error: Number is out of range." << std::endl;
+            }
+        } while (choice < 1 || choice > 2);
+        if(choice == 1)
+        {
+            int super_power = 0;
+            do
+            {
+                print_super_powers();
+                std::cout << "Enter super power number: ";
+                std::cin >> super_power;
+                if(super_power < 1 || super_power > super_powers.size())
+                {
+                    std::cout << "Error: Super power number is out of range." << std::endl;
+                }
+            } while (super_power < 1 || super_power > super_powers.size());
+            super_powers_funcs[super_power - 1]();
+            std::cout << super_powers[super_power - 1] << " has been used." << std::endl;
+            super_powers.erase(super_powers.begin() + (super_power - 1));
+            if(super_powers.empty())
+            {
+                feature_active = true;
+            }
         }
-    } while (super_power < 1 || super_power > super_powers.size());
-    super_powers_funcs[super_power - 1]();
-    std::cout << super_powers[super_power - 1] << " has been used." << std::endl;
-    super_powers.erase(super_powers.begin() + (super_power - 1));
-    if(super_powers.empty())
-    {
-        feature_active = true;
     }
 }
 
 void Wizard::print_death()
 {
+    std::cout << get_type() << " " << get_name() << ": "<< "My magic... it fades into darkness..." << std::endl;
     std::cout << R"(
  █     █░ ██▓▒███████▒ ▄▄▄       ██▀███  ▓█████▄     ██▓  ██████    ▓█████▄ ▓█████ ▄▄▄      ▓█████▄ 
 ▓█░ █ ░█░▓██▒▒ ▒ ▒ ▄▀░▒████▄    ▓██ ▒ ██▒▒██▀ ██▌   ▓██▒▒██    ▒    ▒██▀ ██▌▓█   ▀▒████▄    ▒██▀ ██▌

@@ -21,14 +21,18 @@ void Archer::print_info()
 
 void Archer::use_feature()
 {
-    speed += i_speed;
-    std::cout << get_type() << " " << get_name() << "' " "feature has been used." << std::endl;
-    std::cout << "Speed + " << i_speed << std::endl << std::endl;
-    feature_active = true;
+    if(!feature_active && health < get_max_health() / 2)
+    {
+        speed += i_speed;
+        std::cout << get_type() << " " << get_name() << "' " "feature has been used." << std::endl;
+        std::cout << "Speed + " << i_speed << std::endl;
+        feature_active = true;
+    }
 }
 
 void Archer::print_death()
 {
+    std::cout << get_type() << " " << get_name() << ": "<< "My arrows... they miss their mark... can't keep fighting..." << std::endl;
     std::cout << R"(
  ▄▄▄       ██▀███   ▄████▄   ██░ ██ ▓█████  ██▀███      ██▓  ██████    ▓█████▄ ▓█████ ▄▄▄      ▓█████▄    
 ▒████▄    ▓██ ▒ ██▒▒██▀ ▀█  ▓██░ ██▒▓█   ▀ ▓██ ▒ ██▒   ▓██▒▒██    ▒    ▒██▀ ██▌▓█   ▀▒████▄    ▒██▀ ██▌   

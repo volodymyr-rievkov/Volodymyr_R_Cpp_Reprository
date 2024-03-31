@@ -1,3 +1,4 @@
+#pragma once
 #include<iostream>
 #include"Character.hpp"
 #include"Archer.hpp"
@@ -9,6 +10,7 @@ class Battlefield
 {
 public:
     Battlefield();
+    void launch_game();
 private:
     int players_amount = 0;
     const int min_players_amount = 2;

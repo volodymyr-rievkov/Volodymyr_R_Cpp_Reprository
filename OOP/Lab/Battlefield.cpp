@@ -4,20 +4,7 @@ using namespace std;
 
 Battlefield::Battlefield()
 {
-    start();
-    set_players_amount();
-    set_characters();
-    print_start();
-    set_random_current_player();
-    while(players.size() > 1)
-    {
-        current_player->print_info();
-        cout << endl;
-        active_feature();
-        attack();
-        change_current_player();
-    }
-    finish();
+    
 }
 
 void Battlefield::start()
@@ -78,17 +65,17 @@ void Battlefield::print_characters()
 
 int Battlefield::get_choice(int start_limit, int end_limit)
 {
-    int action = 0;
+    int choice = 0;
     do
     {
         cout << "Enter number: ";
-        cin >> action;
-        if(action < start_limit || action > end_limit)
+        cin >> choice;
+        if(choice < start_limit || choice > end_limit)
         {
             cout << "Error: Number is out of range." << endl;
         }
-    } while (action < start_limit || action > end_limit);
-    return action;
+    } while (choice < start_limit || choice > end_limit);
+    return choice;
 }
 
 void Battlefield::set_characters()
@@ -139,30 +126,6 @@ void Battlefield::set_random_current_player()
 {
     srand(time(0));
     current_player = players[rand() % players.size()];
-}
-
-void Battlefield::active_feature()
-{
-    if(current_player->get_type() != characters[1]->get_type())
-        {
-            if(!current_player->feature_active)
-            {
-                if((current_player->get_type() == characters[0]->get_type() && current_player->health < current_player->get_max_health() / 2) || (current_player->get_type() == characters[2]->get_type() && current_player->health < current_player->get_max_health() / 2))
-                {
-                    current_player->use_feature();
-                }
-                if(current_player->get_type() == characters[3]->get_type() && !current_player->feature_active)
-                {
-                    cout << "Do you want to use feature?\n 1 - Yes\n 2 - No\n: ";
-                    bool choice = get_choice(1, 2);
-                    if(choice == 1)
-                    {
-                        current_player->use_feature();
-                    }
-                }
-            }
-        }
-    
 }
 
 void Battlefield::attack()
@@ -224,4 +187,22 @@ void Battlefield::finish()
       ░       ░  ░       ░      ░  ░           ░           ░  ░        ░   ░  ░  ░   ░  ░   ░    
                                                                                           ░     
     )" << endl << endl;
+}
+
+void Battlefield::launch_game()
+{
+    start();
+    set_players_amount();
+    set_characters();
+    print_start();
+    set_random_current_player();
+    while(players.size() > 1)
+    {
+        current_player->print_info();
+        cout << endl;
+        current_player->use_feature();
+        attack();
+        change_current_player();
+    }
+    finish();
 }
