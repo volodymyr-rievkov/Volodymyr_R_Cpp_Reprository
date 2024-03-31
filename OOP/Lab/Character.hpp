@@ -25,7 +25,7 @@ public:
     std::string get_type(); 
     std::string get_name();
     int get_max_health();
-    void set_name(); 
+    void set_name(std::string name); 
     virtual void print_info(); 
     virtual void use_feature() = 0;
     virtual void print_death() = 0;

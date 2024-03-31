@@ -17,10 +17,11 @@ void Character::set_speed(int speed)
     this->speed = speed;
 }
 
-void Character::set_name()
+void Character::set_name(std::string name)
 {
-    cout << "Enter name: ";
-    cin >> name;
+    // cout << "Enter name: ";
+    // cin >> name;
+    this->name = name;
 }
 
 string Character::get_name()

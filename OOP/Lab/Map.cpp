@@ -1,11 +1,12 @@
-#include "Map.hpp"
+#include"Map.hpp"
+#include"Character.hpp"
 
 template<typename key_type, typename value_type>
-Map<key_type, value_type>::Node::Node(const key_type& key, const value_type& value, Node* node) 
+Map<key_type, value_type>::Node::Node(const key_type& key, const value_type& value, Node* next) 
 {
     this->key = key;
     this->value = value;
-    next = node;
+    next = next;
 }
 
 template<typename key_type, typename value_type>
@@ -79,4 +80,4 @@ void Map<key_type, value_type>::clear()
     }
 }
 
-template class Map<int,int>;
+template class Map<std::string, Character*>;
