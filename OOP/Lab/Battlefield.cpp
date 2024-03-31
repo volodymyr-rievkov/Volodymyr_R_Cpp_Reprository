@@ -104,7 +104,7 @@ void Battlefield::set_players()
         cout << endl;
         character->set_name(name);
         players.add(name, character);
-        (*players.begin())->print_info();
+        character->print_info();
         cout << endl;
     }
 }
@@ -122,7 +122,7 @@ void Battlefield::print_players()
         {
             cout << " ";
         }
-    cout << (*player)->get_type() << " " << (*player)->get_name() << "(" << (*player)->health << "/" << (*player)->get_max_health() << ")" << endl;
+        cout << (*player)->get_type() << " " << (*player)->get_name() << "(" << (*player)->health << "/" << (*player)->get_max_health() << ")" << endl;
     }
     cout << endl;
 }
@@ -134,12 +134,12 @@ void Battlefield::set_random_current_player()
     int count = 0;
     for(auto player = players.begin(); player != players.end(); ++player)
     {
-        count++;
         if(index == count)
         {
             current_player = *player;
             break;
         }
+        count++;
     }
 }
 

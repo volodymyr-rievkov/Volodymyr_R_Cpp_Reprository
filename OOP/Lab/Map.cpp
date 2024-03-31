@@ -6,7 +6,7 @@ Map<key_type, value_type>::Node::Node(const key_type& key, const value_type& val
 {
     this->key = key;
     this->value = value;
-    next = next;
+    this->next = next;
 }
 
 template<typename key_type, typename value_type>

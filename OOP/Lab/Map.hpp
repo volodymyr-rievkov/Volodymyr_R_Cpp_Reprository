@@ -9,7 +9,7 @@ private:
     {
         key_type key;
         value_type value;
-        Node* next;
+        Node* next = nullptr;
         Node(const key_type& key, const value_type& value, Node* next);
     };
     Node* head;
