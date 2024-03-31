@@ -143,31 +143,38 @@ void Battlefield::set_random_current_player()
     }
 }
 
+
 void Battlefield::attack()
 {
     cout << "Choose player to attack" << endl;
     print_players();
     string name;
     Character* to_attack_player = nullptr;
+    
     do
     {
         cout << "Enter name: ";
         cin >> name;
-        to_attack_player = *players.search(name);
-        if(to_attack_player == nullptr )
+        to_attack_player = players.search(name);
+        
+        if(to_attack_player == nullptr)
         {
-            cout << "Error: There is no player on name '" << name << "'." << endl;
+            cout << "Error: There is no player with the name '" << name << "'." << endl;
         }
-        if(to_attack_player == current_player)
+        else if(to_attack_player == current_player)
         {
             cout << "Error: You can't harm yourself." << endl;
+            to_attack_player = nullptr;
         }
-    }while (to_attack_player == nullptr || to_attack_player == current_player);
+    } while (to_attack_player == nullptr);
+    
     for(int i = 0; i < current_player->speed; i++)
     {
         to_attack_player->health -= current_player->damage;
-        cout << to_attack_player->get_type() << " " << to_attack_player->get_name() << " - " << current_player->damage << endl << endl;
+        cout << to_attack_player->get_type() << " " << to_attack_player->get_name() 
+             << " - " << current_player->damage << endl << endl;
     }
+    
     if(to_attack_player->health <= 0)
     {
         to_attack_player->print_death();
@@ -211,6 +218,7 @@ void Battlefield::finish()
       ░       ░  ░       ░      ░  ░           ░           ░  ░        ░   ░  ░  ░   ░  ░   ░    
                                                                                           ░     
     )" << endl << endl;
+    players.~Map();
 }
 
 void Battlefield::launch_game()

@@ -29,14 +29,14 @@ void Map<key_type, value_type>::add(const key_type& key, const value_type& value
 }
 
 template<typename key_type, typename value_type>
-value_type* Map<key_type, value_type>::search(const key_type& key) 
+value_type Map<key_type, value_type>::search(const key_type& key) 
 {
     Node* current = head;
     while(current != nullptr) 
     {
         if(current->key == key) 
         {
-            return &current->value;
+            return current->value;
         }
         current = current->next;
     }

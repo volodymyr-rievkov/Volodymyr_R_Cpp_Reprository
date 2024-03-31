@@ -46,7 +46,7 @@ public:
     Map();
     ~Map();
     void add(const key_type& key, const value_type& value);
-    value_type* search(const key_type& key);
+    value_type search(const key_type& key);
     void remove(const key_type& key);
     void clear();
     Iterator begin() { return Iterator(head); };
