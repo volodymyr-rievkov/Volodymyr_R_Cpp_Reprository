@@ -11,6 +11,7 @@ class Battlefield
 {
 public:
     Battlefield();
+    ~Battlefield();
     void launch_game();
 private:
     int players_amount = 0;

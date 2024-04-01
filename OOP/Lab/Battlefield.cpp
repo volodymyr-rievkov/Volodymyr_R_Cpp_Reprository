@@ -143,7 +143,6 @@ void Battlefield::set_random_current_player()
     }
 }
 
-
 void Battlefield::attack()
 {
     cout << "Choose player to attack" << endl;
@@ -218,7 +217,6 @@ void Battlefield::finish()
       ░       ░  ░       ░      ░  ░           ░           ░  ░        ░   ░  ░  ░   ░  ░   ░    
                                                                                           ░     
     )" << endl << endl;
-    players.~Map();
 }
 
 void Battlefield::launch_game()
@@ -237,4 +235,12 @@ void Battlefield::launch_game()
         change_current_player();
     }
     finish();
+}
+
+Battlefield::~Battlefield()
+{
+    for (Character* character : characters) 
+    {
+        delete character;
+    }
 }
