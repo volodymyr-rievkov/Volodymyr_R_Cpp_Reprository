@@ -21,7 +21,7 @@ void Warrior::print_info()
 
 void Warrior::use_feature()
 {
-    if(!feature_active && health < get_max_health() / 2)
+    if(!feature_active && health < max_health / 2)
     {
         damage += i_damage;
         std::cout << get_type() << " " << get_name() << "' " "feature has been used." << std::endl;

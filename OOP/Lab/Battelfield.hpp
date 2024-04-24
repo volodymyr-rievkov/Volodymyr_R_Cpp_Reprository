@@ -11,14 +11,13 @@ class Battlefield
 {
 public:
     Battlefield();
-    ~Battlefield();
     void launch_game();
 private:
     int players_amount = 0;
     const int min_players_amount = 2;
     const int max_players_amount = 6;
     Character* current_player = nullptr;
-    const std::vector<Character*> characters = {new Archer(), new Golem(), new Warrior(), new Wizard()};
+    const std::vector<std::string> characters = {"Archer", "Golem", "Warrior", "Wizard"};
     Map<std::string, Character*> players;
     void print_characters();
     void start();

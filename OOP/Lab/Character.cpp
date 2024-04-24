@@ -62,8 +62,3 @@ void Character::set_max_health(int health)
 {
     max_health = health;
 }
-
-int Character::get_max_health()
-{
-    return max_health;
-}

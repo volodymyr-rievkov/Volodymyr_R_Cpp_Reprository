@@ -58,7 +58,7 @@ void Battlefield::print_characters()
     int count = 0;
     for(auto character : characters)
     {
-        cout << ++count << " - " << character->get_type() << endl;
+        cout << ++count << " - " << character << endl;
     }
 }
 
@@ -122,7 +122,7 @@ void Battlefield::print_players()
         {
             cout << " ";
         }
-        cout << (*player)->get_type() << " " << (*player)->get_name() << "(" << (*player)->health << "/" << (*player)->get_max_health() << ")" << endl;
+        cout << (*player)->get_type() << " " << (*player)->get_name() << "(" << (*player)->health << "/" << (*player)->max_health << ")" << endl;
     }
     cout << endl;
 }
@@ -235,12 +235,4 @@ void Battlefield::launch_game()
         change_current_player();
     }
     finish();
-}
-
-Battlefield::~Battlefield()
-{
-    for (Character* character : characters) 
-    {
-        delete character;
-    }
 }

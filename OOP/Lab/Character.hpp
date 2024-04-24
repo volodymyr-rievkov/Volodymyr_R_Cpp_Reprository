@@ -24,7 +24,6 @@ public:
     bool feature_active = false;
     std::string get_type(); 
     std::string get_name();
-    int get_max_health();
     void set_name(std::string name); 
     virtual void print_info(); 
     virtual void use_feature() = 0;
