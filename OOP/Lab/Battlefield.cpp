@@ -219,7 +219,7 @@ void Battlefield::finish()
     )" << endl << endl;
 }
 
-void Battlefield::launch_game()
+void Battlefield::start()
 {
     start();
     set_players_amount();

@@ -10,23 +10,22 @@
 class Battlefield
 {
 public:
-    Battlefield();
-    void start();
+    Battlefield() {};
+    virtual ~Battlefield() {};
+    virtual void start() = 0;
+    virtual void print_title() = 0;
+    Map<std::string, Character*> players;
+    std::pair<int, int> get_players_amount_limits();
+    int* get_players_amount();
+    Character* get_current_player();
 private:
     int players_amount = 0;
     const int min_players_amount = 2;
     const int max_players_amount = 6;
     Character* current_player = nullptr;
-    const std::vector<std::string> characters = {"Archer", "Golem", "Warrior", "Wizard"};
-    Map<std::string, Character*> players;
-    void print_characters();
-    void start();
-    void set_players();
-    void set_players_amount();
+protected:
     void print_players();
-    void set_random_current_player();
-    void print_start();
     void attack();
+    void set_random_current_player();
     void change_current_player();
-    void finish();
 };

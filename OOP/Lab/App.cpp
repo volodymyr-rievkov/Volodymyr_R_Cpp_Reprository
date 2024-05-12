@@ -4,5 +4,5 @@
 int main()
 {
     Battlefield b;
-    b.launch_game();
+    b.start();
 }
