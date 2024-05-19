@@ -1,5 +1,6 @@
 #include"Game.hpp"
 #include"Map.hpp"
+#include"windows.h"
 #include"Battelfield.hpp"
 #include"BattlefieldCreator.hpp"
 #include"ConcreateBdCreator.hpp"
@@ -7,6 +8,7 @@
 
 void Game::start()
 {
+    SetConsoleOutputCP(CP_UTF8);
     print_title();
     set_battlefield();
     battlefield->print_title();
@@ -163,6 +165,7 @@ void Game::finish()
     Character* current_player = battlefield->get_current_player();
     Character::change_font_colour(6);
     std::cout << current_player->get_type() << " " << current_player->get_name() << " won!" << std::endl << std::endl;
+    current_player->scream();
     std::cout << R"(
                   ▄████  ▄▄▄       ███▄ ▄███▓▓█████      █████▒██▓ ███▄    █  ██▓  ██████  ██░ ██ ▓█████ ▓█████▄ 
                  ██▒ ▀█▒▒████▄    ▓██▒▀█▀ ██▒▓█   ▀    ▓██   ▒▓██▒ ██ ▀█   █ ▓██▒▒██    ▒ ▓██░ ██▒▓█   ▀ ▒██▀ ██▌
