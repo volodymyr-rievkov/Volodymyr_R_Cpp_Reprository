@@ -1,5 +1,7 @@
 #include<iostream>
 #include"Battelfield.hpp"
+#include"BasicAttackStrategy.hpp"
+#include"ScatteringAttackStrategy.hpp"
 using namespace std;
 
 void Battlefield::print_players()
@@ -36,13 +38,11 @@ void Battlefield::set_random_current_player()
     }
 }
 
-void Battlefield::attack()
+void Battlefield::perform_attack()
 {
     cout << "Choose player to attack" << endl;
     print_players();
     string name;
-    Character* to_attack_player = nullptr;
-    
     do
     {
         cout << "Enter name: ";
@@ -64,21 +64,8 @@ void Battlefield::attack()
         }
     } while (to_attack_player == nullptr);
     current_player->scream();
-    for(int i = 0; i < current_player->speed; i++)
-    {
-        to_attack_player->health -= current_player->damage;
-        Character::change_font_colour(4);
-        cout << to_attack_player->get_type() << " " << to_attack_player->get_name() 
-             << " - " << current_player->damage << endl << endl;
-        Character::change_font_colour(7);
-    }
-    
-    if(to_attack_player->health <= 0)
-    {
-        to_attack_player->print_death();
-        players.remove(name);
-        players_amount--;
-    }
+    set_attack_strategy();
+    attack_strategy->attack(players, current_player, to_attack_player);
 }
 
 void Battlefield::change_current_player()
@@ -114,4 +101,40 @@ int* Battlefield::get_players_amount()
 Character* Battlefield::get_current_player()
 {
     return current_player;
+}
+
+void Battlefield::set_attack_strategy()
+{
+    int choice = 0;
+    do
+    {
+        cout << "Choose attack strategy" << endl << "1 - Basic Attack" << endl << "2 - Scattering Attack" << endl << "Enter number: ";
+        cin >> choice;
+        if(choice < 1 || choice > 2)
+        {
+            cout << "Error: Number is out of range." << endl << endl;
+        }
+    } while (choice < 1 || choice > 2);
+    if(choice == 1)
+    {
+        attack_strategy = new BasicAttackStrategy();
+    }
+    else
+    {
+        attack_strategy = new ScatteringAttackStartegy();
+    }
+}
+
+void Battlefield::check_deaths()
+{
+    for(auto player = players.begin(); player != players.end(); ++player)
+    {
+        Character* player_buff = *player;
+        if(player_buff->health <= 0)
+        {
+            player_buff->print_death();
+            players.remove(player_buff->get_name());
+            players_amount--;
+        }
+    }
 }

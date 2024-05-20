@@ -10,9 +10,11 @@ void DamageBattlefield::start()
         current_player->print_info();
         std::cout << std::endl;
         current_player->use_feature();
-        attack();
+        perform_attack();
+        check_deaths();
         change_current_player();
         random_damage();
+        check_deaths();
     }
 }
 
@@ -68,12 +70,6 @@ void DamageBattlefield::random_damage()
                 break;
             }
             count++;
-        }
-        if(current_player->health <= 0)
-        {
-            current_player->print_death();
-            players.remove(current_player->get_name());
-            players_amount--;
         }
     }
 }

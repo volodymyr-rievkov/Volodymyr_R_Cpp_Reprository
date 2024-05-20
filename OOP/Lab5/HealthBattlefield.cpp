@@ -10,7 +10,8 @@ void HealthBattlefield::start()
         current_player->print_info();
         std::cout << std::endl;
         current_player->use_feature();
-        attack();
+        perform_attack();
+        check_deaths();
         change_current_player();
         random_health();
     }
