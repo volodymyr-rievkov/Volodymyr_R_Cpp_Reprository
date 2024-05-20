@@ -11,13 +11,13 @@ class Battlefield
 {
 public:
     Battlefield() {};
-    virtual ~Battlefield() {};
+    ~Battlefield() {};
     virtual void start() = 0;
     virtual void print_title() = 0;
     Map<std::string, Character*> players;
+    Character* get_current_player();
     std::pair<int, int> get_players_amount_limits();
     int* get_players_amount();
-    Character* get_current_player();
 private:
     int players_amount = 0;
     const int min_players_amount = 2;

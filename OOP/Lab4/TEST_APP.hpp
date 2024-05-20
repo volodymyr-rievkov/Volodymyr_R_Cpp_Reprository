@@ -1,0 +1,10 @@
+class TEST_APP
+{
+public:
+    void TEST_SET_DAMAGE_BATTLEFIELD();
+    void TEST_SET_HEALTH_BATTLEFIELD();
+    void TEST_SET_PLAYERS_AMOUNT();
+    void TEST_SET_PLAYERS();
+    void TEST_START_METHOD();
+    void RUN_ALL_TEST();
+};

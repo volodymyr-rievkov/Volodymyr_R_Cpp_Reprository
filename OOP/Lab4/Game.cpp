@@ -185,3 +185,8 @@ Game::~Game()
 {
     delete battlefield;
 }
+
+Battlefield* Game::get_battlefield()
+{
+    return battlefield;
+}
