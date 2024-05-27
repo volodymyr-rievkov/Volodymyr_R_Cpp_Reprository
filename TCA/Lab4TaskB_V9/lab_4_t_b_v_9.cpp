@@ -22,7 +22,6 @@ int main()
     {
         int a, b;
         cin >> a >> b;
-        a; b;
         graph[a].push_back(b);
     }
     int result = 0;
