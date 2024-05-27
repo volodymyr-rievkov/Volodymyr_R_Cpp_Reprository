@@ -52,13 +52,13 @@ void Battlefield::perform_attack()
         if(to_attack_player == nullptr)
         {
             Character::change_font_colour(4);
-            cout << "Error: There is no player with the name '" << name << "'." << endl << endl;
+            cerr << "Error: There is no player with the name '" << name << "'." << endl << endl;
             Character::change_font_colour(7);
         }
         else if(to_attack_player == current_player)
         {
             Character::change_font_colour(4);
-            cout << "Error: You can't harm yourself." << endl << endl;
+            cerr << "Error: You can't harm yourself." << endl << endl;
             Character::change_font_colour(7);
             to_attack_player = nullptr;
         }
@@ -112,7 +112,7 @@ void Battlefield::set_attack_strategy()
         cin >> choice;
         if(choice < 1 || choice > 2)
         {
-            cout << "Error: Number is out of range." << endl << endl;
+            cerr << "Error: Number is out of range." << endl << endl;
         }
     } while (choice < 1 || choice > 2);
     if(choice == 1)
@@ -129,12 +129,20 @@ void Battlefield::check_deaths()
 {
     for(auto player = players.begin(); player != players.end(); ++player)
     {
-        Character* player_buff = *player;
-        if(player_buff->health <= 0)
+        if((*player)->health <= 0)
         {
-            player_buff->print_death();
-            players.remove(player_buff->get_name());
-            players_amount--;
+            if((*player) == current_player)
+            {
+                change_current_player();
+            }
+            players_to_remove.push_back(*player);            
         }
     }
+    for(int i = 0; i < players_to_remove.size(); i++)
+    {
+        players_to_remove[i]->print_death();
+        players.remove(players_to_remove[i]->get_name());
+        players_amount--;
+    }
+    players_to_remove.clear();
 }

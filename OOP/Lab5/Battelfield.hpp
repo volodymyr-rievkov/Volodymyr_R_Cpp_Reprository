@@ -6,6 +6,7 @@
 #include"Wizard.hpp"
 #include"Golem.hpp"
 #include"Map.hpp"
+#include<vector>
 #include"AttackStrategy.hpp"
 
 class Battlefield
@@ -26,6 +27,7 @@ private:
     Character* current_player = nullptr;
     Character* to_attack_player = nullptr;
     AttackStrategy* attack_strategy = nullptr;
+    std::vector<Character*> players_to_remove;
     void set_attack_strategy();
 protected:
     void print_players();
