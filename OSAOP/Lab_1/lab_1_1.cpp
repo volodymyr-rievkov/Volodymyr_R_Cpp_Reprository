@@ -1,7 +1,8 @@
 #include <windows.h>
 #include <shlobj.h>
 #include <string>
-#include<stdio.h>
+#include <stdio.h>
+#include <filesystem>
 
 std::wstring choose_folder() 
 {
@@ -21,6 +22,7 @@ std::wstring choose_folder()
 
 void zip_folder(const std::wstring& folder_path, const std::wstring& zip_path) 
 {
+    bool is_to_kill = false;
     std::wstring winrar_path = L"C:\\Program Files\\WinRAR\\WinRAR.exe";
     std::wstring command = L"\"";
     command += winrar_path;
@@ -40,23 +42,27 @@ void zip_folder(const std::wstring& folder_path, const std::wstring& zip_path)
         
         Sleep(2000);
 
-        ResumeThread(pi.hThread);
-        MessageBoxW(NULL, L"Thread  was successfully resumed.", L"Success", MB_OK | MB_ICONINFORMATION);
-        Sleep(2000);
-
-        if(true)
+        if(!is_to_kill)
         {
             TerminateProcess(pi.hProcess, 0);
+            if (std::filesystem::exists(zip_path)) 
+            {
+                std::filesystem::remove(zip_path);
+            }
             MessageBoxW(NULL, L"Process  was successfully terminated.", L"Success", MB_OK | MB_ICONINFORMATION);
             Sleep(2000);
         }
         else
         {
+            ResumeThread(pi.hThread);
+            MessageBoxW(NULL, L"Thread  was successfully resumed.", L"Success", MB_OK | MB_ICONINFORMATION);
+            Sleep(2000);
+
             WaitForSingleObject(pi.hProcess, INFINITE);
-            CloseHandle(pi.hProcess);
-            CloseHandle(pi.hThread);
             MessageBoxW(NULL, L"Folder  was successfully zipped.", L"Success", MB_OK | MB_ICONINFORMATION);
         }
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
     } 
     else 
     {
