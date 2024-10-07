@@ -10,7 +10,6 @@
     #include <unistd.h> 
     #include <sys/wait.h> 
     #include <gtk/gtk.h>
-
 #endif
 
 void cross_platform_sleep(int seconds) 
