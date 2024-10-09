@@ -2,28 +2,52 @@
 #include<fstream>
 #include<sstream>
 #include<chrono>
-#include<windows.h>
 #include<vector>
 #include<mutex>
+#include<semaphore.h>
+#include<atomic>
+#include<thread>
 
-HANDLE semaphore;
-CRITICAL_SECTION cs;
+#ifdef __linux__
+#include <gtk/gtk.h>
+#elif __WIN32__
+#include <windows.h>
+#endif
+
 std::mutex mtx;
+sem_t semaphore;
 
 using matrix = std::vector<std::vector<int>>;
+ 
+void show_message(const char* message) 
+{   
+    #ifdef __linux__ 
+    gtk_init(NULL, NULL);
+    GtkWidget *dialog;
+    dialog = gtk_message_dialog_new(NULL, GTK_DIALOG_DESTROY_WITH_PARENT, 
+                                    GTK_MESSAGE_INFO, GTK_BUTTONS_OK, 
+                                    "%s", message);
+    gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+    #endif
+}
 
 void generate_matrix_into_file(const std::string& file_name, int rows, int cols)
 {
     std::ofstream out_file(file_name);
-    if(!out_file)
+    if (!out_file)
     {
+        #ifdef __WIN32__
         MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
+        #elif __linux__
+        show_message("Error: File cannot be opened!");
+        #endif
         return;
     }
-    srand(time(0)); 
-    for (int i = 0; i < rows; i++) 
+    srand(static_cast<unsigned>(time(0)));
+    for (int i = 0; i < rows; i++)
     {
-        for (int j = 0; j < cols; j++) 
+        for (int j = 0; j < cols; j++)
         {
             out_file << rand() % 100 << " ";
         }
@@ -37,44 +61,52 @@ matrix read_matrix_from_file(const std::string& file_name)
     std::ifstream file(file_name);
     matrix m;
     std::string line;
-    if (file.is_open()) 
+    if (file.is_open())
     {
-        while (getline(file, line)) 
+        while (getline(file, line))
         {
             std::vector<int> row;
             std::stringstream ss(line);
             int value;
             while (ss >> value) {
-                row.push_back(value); 
+                row.push_back(value);
             }
-            m.push_back(row); 
+            m.push_back(row);
         }
         file.close();
-    } 
-    else 
+    }
+    else
     {
+        #ifdef __WIN32__
         MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
+        #elif __linux__
+        show_message("Error: File cannot be opened!");
+        #endif        
     }
     return m;
 }
 
-void write_matrix_to_file(const matrix& m, const std::string& file_name) 
+void write_matrix_to_file(const matrix& m, const std::string& file_name)
 {
     std::ofstream out_file(file_name);
-    if (!out_file) 
+    if (!out_file)
     {
+        #ifdef __WIN32__
         MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
+        #elif __linux__
+        show_message("Error: File cannot be opened!");
+        #endif
         return;
     }
-    for (const auto& row : m) 
+    for (const auto& row : m)
     {
-        for (const auto& val : row) 
+        for (const auto& val : row)
         {
-            out_file << val << " "; 
+            out_file << val << " ";
         }
-        out_file << "\n"; 
+        out_file << "\n";
     }
-    out_file.close(); 
+    out_file.close();
 }
 
 void print_info(int thread_n, double time)
@@ -82,10 +114,14 @@ void print_info(int thread_n, double time)
     std::wstring message = L"Matrix was successfully calculated\n";
     message += L"Number of threads: " + std::to_wstring(thread_n) + L"\n";
     message += L"Time taken: " + std::to_wstring(time) + L"s";
+    #ifdef __linux__
+    show_message(message);
+    #elif __WIN32__
     MessageBoxW(NULL, message.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
+    #endif
 }
 
-void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, int end_r, LONG& p_progress, LONG& t_progress) 
+void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, int end_r, std::atomic<int>& p_progress, std::atomic<int>& t_progress) 
 {
     int rows = m.size();
     int cols = m[0].size();
@@ -110,18 +146,18 @@ void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, in
                 }
             }
             result[i][j] = (count > 0) ? sum / count : 0;
-            InterlockedIncrement(&t_progress);
+            t_progress++;
         }
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
-    EnterCriticalSection(&cs);
+    mtx.lock();
     std::cout << "Thread " << thread_id << " is finished in " << duration.count() << "s.\n";
-    LeaveCriticalSection(&cs);
-    InterlockedIncrement(&p_progress);
+    mtx.unlock();
+    p_progress++;
 }
 
-void calculate_average_even(int thread_id, matrix& m, matrix& result, LONG& p_progress, LONG& t_progress) 
+void calculate_average_even(int thread_id, matrix& m, matrix& result, std::atomic<int>& p_progress, std::atomic<int>& t_progress) 
 {
     int rows = m.size();
     int cols = m[0].size();
@@ -149,154 +185,120 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result, LONG& p_pr
                 }
             }
             result[i][j] = (count > 0) ? sum / count : 0;
-            InterlockedIncrement(&t_progress);
+            t_progress++;
         }
         
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
-    EnterCriticalSection(&cs);
+    mtx.lock();
     std::cout << "Thread " << thread_id << " is finished in" << duration.count() << "s.\n";
-    LeaveCriticalSection(&cs);
-    InterlockedIncrement(&p_progress);
+    mtx.unlock();
+    p_progress++;
 }
 
-void set_priority(HANDLE thread, char thread_prior)
+void set_priority(std::thread& thread, char thread_prior)
 {
-    if (thread) 
+    sched_param sch_params;
+    switch (thread_prior) 
     {
-        switch (thread_prior) 
-        {
-            case 'L':
-                SetThreadPriority(thread, THREAD_PRIORITY_LOWEST);
-                break;
-            case 'N':
-                SetThreadPriority(thread, THREAD_PRIORITY_NORMAL);
-                break;
-            case 'H':
-                SetThreadPriority(thread, THREAD_PRIORITY_HIGHEST);
-                break;
-            default:
-                SetThreadPriority(thread, THREAD_PRIORITY_NORMAL);
-        }
+        case 'L':
+            sch_params.sched_priority = 10;
+            break;
+        case 'N':
+               sch_params.sched_priority = 20;
+               break;
+        case 'H':
+            sch_params.sched_priority = 30;
+            break;
+        default:
+             sch_params.sched_priority = 20;
     }
+    pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &sch_params);
 }
 
-DWORD WINAPI monitor_process(LPVOID lpParam) 
+void monitor_process(int total_threads, std::atomic<int>& progress) 
 {
-    auto params = static_cast<std::tuple<int, LONG*>*>(lpParam);
-    int total_threads = std::get<0>(*params);
-    LONG& progress = *std::get<1>(*params);
     while (progress < total_threads) 
     {
         double percentage = (static_cast<double>(progress) / total_threads) * 100.0;
-        EnterCriticalSection(&cs);
+        mtx.lock();
         std::cout << "Process progress: " << percentage << "%\n";
-        LeaveCriticalSection(&cs);
-        Sleep(1000);
+        mtx.unlock();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    EnterCriticalSection(&cs);
+    mtx.lock();
     std::cout << "Process progress: 100.00%\n";
-    LeaveCriticalSection(&cs);
-    return 0;
+    mtx.unlock();
 }
 
-DWORD WINAPI monitor_thread(LPVOID lpParam) 
+void monitor_thread(int total_elements, int thread_id, std::atomic<int>& progress) 
 {
-    auto params = static_cast<std::tuple<int, int, LONG*>*>(lpParam);
-    int total_elements = std::get<0>(*params);
-    int thread_id = std::get<1>(*params);
-    LONG& progress = *std::get<2>(*params);
     while (progress < total_elements) 
     {
         double percentage = (static_cast<double>(progress) / total_elements) * 100.0;
-        EnterCriticalSection(&cs);
+        mtx.lock();
         std::cout << "Thread "<< thread_id << " progress: " << percentage << "%\n";
-        LeaveCriticalSection(&cs);
-        Sleep(1000);
+        mtx.unlock();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
-    EnterCriticalSection(&cs);
+    mtx.lock();
     std::cout << "Thread " << thread_id << " progress: 100.00%\n";
-    LeaveCriticalSection(&cs);
-    return 0;
+    mtx.unlock();
 }
 
-DWORD WINAPI matrix_calculation_task(LPVOID lpParam) 
+void matrix_calculation_task(int thread_id, matrix& m, matrix& result, int start_r, int end_r, int elements, bool divide_tasks, std::atomic<int>& p_progress, std::atomic<int>& t_progress) 
 {
-    auto params = static_cast<std::tuple<int, matrix*, matrix*, int, int, bool, LONG*, LONG*, int>*>(lpParam);
-    int thread_id = std::get<0>(*params);
-    matrix& m = *std::get<1>(*params);
-    matrix& result = *std::get<2>(*params);
-    int start_r = std::get<3>(*params);
-    int end_r = std::get<4>(*params);
-    bool divide_tasks = std::get<5>(*params);
-    LONG* p_progress = std::get<6>(*params);
-    LONG* t_progress = std::get<7>(*params);
-    int elements = std::get<8>(*params);
-    auto* inside_params = new std::tuple<int, int, LONG*>(elements, thread_id, t_progress);
-    HANDLE monitor_thread_t = CreateThread(NULL, 0, monitor_thread, inside_params, 0, NULL);
+    std::thread monitor_thread_t(monitor_thread, elements, thread_id, ref(t_progress));
     if (!divide_tasks) 
     {
-        calculate_average(thread_id, m, result, start_r, end_r, *p_progress, *t_progress);
+        calculate_average(thread_id, m, result, start_r, end_r, ref(p_progress), ref(t_progress));
     } 
     else 
     {
-        calculate_average_even(thread_id, m, result, *p_progress, *t_progress);
+        calculate_average_even(thread_id, m, result, ref(p_progress), ref(t_progress));
     }
-    WaitForSingleObject(monitor_thread_t, INFINITE);
-    CloseHandle(monitor_thread_t);
-    delete[] inside_params;
-    ReleaseSemaphore(semaphore, 1, NULL);
-    //mtx.unlock();
-    return 0;
+    monitor_thread_t.join();
 }
 
-void setup_threads(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities, bool divide_tasks_due_to_even, LONG& process_progress, int max_concurrent_threads) 
+void setup_threads(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities, bool divide_tasks_due_to_even, std::atomic<int>& process_progress, int max_concurrent_threads) 
 {
-    semaphore = CreateSemaphore(NULL, max_concurrent_threads, max_concurrent_threads, NULL);
-    InitializeCriticalSection(&cs);
-    HANDLE* threads = new HANDLE[threads_n];
-    auto* params = new std::tuple<int, matrix*, matrix*, int, int, bool, LONG*, LONG*, int>[threads_n];
-    LONG thread_progress = 0;
+    sem_init(&semaphore, 0, max_concurrent_threads);
+    std::vector<std::thread> threads;
+    std::atomic<int> thread_progress = 0;
+    int rows_n = m.size();
+    int cols_n = m[0].size();
     for (int i = 0; i < threads_n; i++) 
     {
-        WaitForSingleObject(semaphore, INFINITE);
-        //mtx.lock();
-        int rows_n = m.size();
-        int cols_n = m[0].size();
         int rows_per_t = rows_n / threads_n;
         int start_row = i * rows_per_t;
         int end_row = (i == threads_n - 1) ? rows_n : start_row + rows_per_t;
         int elements_n = rows_per_t * cols_n;
         thread_progress = 0;
-        params[i] = std::make_tuple(i + 1, &m, &result, start_row, end_row, divide_tasks_due_to_even, &process_progress, &thread_progress, elements_n);
-        threads[i] = CreateThread(NULL, 0, matrix_calculation_task, &params[i], 0, NULL);
+        threads.emplace_back([&, i]() {
+            sem_wait(&semaphore); 
+            matrix_calculation_task(i + 1, m, result, start_row, end_row, elements_n, divide_tasks_due_to_even, ref(process_progress), ref(thread_progress));
+            sem_post(&semaphore); 
+        });
         if (thread_priorities.size() > 0) 
         {
             set_priority(threads[i], thread_priorities[i]);
         }
     }
-    WaitForMultipleObjects(threads_n, threads, TRUE, INFINITE);
-    for (int i = 0; i < threads_n; ++i) 
+    for (auto& thread : threads) 
     {
-        CloseHandle(threads[i]);
+        thread.join();
     }
-    DeleteCriticalSection(&cs);
-    CloseHandle(semaphore);
-    delete[] threads;
-    delete[] params;
+    sem_destroy(&semaphore);
 }
 
 void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::vector<char> threads_priorities, int max_concurrent_threads) 
 {
-    LONG process_progress = 0;
+    std::atomic<int> process_progress = 0;
     bool divide_tasks_due_to_even = false;
-    auto* params = new std::tuple<int, LONG*>(threads_n, &process_progress);
-    HANDLE monitor_process_t = CreateThread(NULL, 0, monitor_process, params, 0, NULL);
-    setup_threads(m, result, threads_n, threads_priorities, divide_tasks_due_to_even, process_progress, max_concurrent_threads);
-    WaitForSingleObject(monitor_process_t, INFINITE);
-    CloseHandle(monitor_process_t);
-    delete[] params;
+    std::thread monitor_process_t(monitor_process, threads_n, ref(process_progress));
+    setup_threads(m, result, threads_n, threads_priorities, divide_tasks_due_to_even, ref(process_progress), max_concurrent_threads);
+    monitor_process_t.join();
 }
 
 int main()
@@ -308,7 +310,7 @@ int main()
     const int cols = 1000;
 
     const int threads_n = 3;
-    const int max_concurrent_threads = 1;
+    const int max_concurrent_threads = 2;
     std::vector<char> threads_priorities = {'L', 'H', 'N'};
 
     generate_matrix_into_file(m_file, rows, cols);

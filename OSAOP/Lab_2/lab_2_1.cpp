@@ -106,7 +106,8 @@ void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, in
             }
             result[i][j] = sum / count;
         }
-    }auto end_time = std::chrono::high_resolution_clock::now();
+    }
+    auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
     std::cout << "Thread " << thread_id << " is finished in " << duration.count() << "s.\n";
 }
@@ -146,63 +147,63 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result)
     std::cout << "Thread " << thread_id << " is finished in" << duration.count() << "s.\n";
 }
 
-void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities) 
+DWORD WINAPI matrix_calculation_task(LPVOID lpParam) 
 {
-    bool divide_tasks_due_to_even = false;
-    int rows_n = m.size();
-    int rows_per_t = rows_n / threads_n;
+    auto params = static_cast<std::tuple<int, matrix*, matrix*, int, int, bool>*>(lpParam);
+    int thread_id = std::get<0>(*params);
+    matrix& m = *std::get<1>(*params);
+    matrix& result = *std::get<2>(*params);
+    int start_r = std::get<3>(*params);
+    int end_r = std::get<4>(*params);
+    bool divide_tasks = std::get<5>(*params);
+    if (!divide_tasks) 
+    {
+        calculate_average(thread_id, m, result, start_r, end_r);
+    } 
+    else 
+    {
+        calculate_average_even(thread_id, m, result);
+    }
+    return 0;
+}
+
+void set_priority(HANDLE thread, char thread_prior)
+{
+    if (thread) 
+    {
+        switch (thread_prior) 
+        {
+            case 'L':
+                SetThreadPriority(thread, THREAD_PRIORITY_LOWEST);
+                break;
+            case 'N':
+                SetThreadPriority(thread, THREAD_PRIORITY_NORMAL);
+                break;
+            case 'H':
+                SetThreadPriority(thread, THREAD_PRIORITY_HIGHEST);
+                break;
+            default:
+                SetThreadPriority(thread, THREAD_PRIORITY_NORMAL);
+        }
+    }
+}
+
+void setup_threads(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities, bool divide_tasks_due_to_even) 
+{
     HANDLE* threads = new HANDLE[threads_n];
     auto* params = new std::tuple<int, matrix*, matrix*, int, int, bool>[threads_n];
+    int rows_n = m.size();
+    int cols_n = m[0].size();
     for (int i = 0; i < threads_n; i++) 
     {
-        int start_r = i * rows_per_t;
-        int end_row = (i == threads_n - 1) ? rows_n : start_r + rows_per_t;
-        params[i] = std::make_tuple(i + 1, &m, &result, start_r, end_row, divide_tasks_due_to_even);
-        threads[i] = CreateThread
-        (
-            NULL,
-            0,
-            [](LPVOID lpParam) -> DWORD 
-            {
-                auto params = static_cast<std::tuple<int, matrix*, matrix*, int, int, bool>*>(lpParam);
-                int thread_id = std::get<0>(*params);
-                matrix& m = *std::get<1>(*params);
-                matrix& result = *std::get<2>(*params);
-                int start_r = std::get<3>(*params);
-                int end_r = std::get<4>(*params);
-                bool divide_tasks_due_to_even = std::get<5>(*params);
-                if(!divide_tasks_due_to_even)
-                {
-                    calculate_average(thread_id, m, result, start_r, end_r);
-                }
-                else
-                {
-                    calculate_average_even(thread_id, m, result);
-                }
-                return 0;
-            },
-            &params[i],
-            0,
-            NULL
-        );
-        if(thread_priorities.size() > 0)
+        int rows_per_t = rows_n / threads_n;
+        int start_row = i * rows_per_t;
+        int end_row = (i == threads_n - 1) ? rows_n : start_row + rows_per_t;
+        params[i] = std::make_tuple(i + 1, &m, &result, start_row, end_row, divide_tasks_due_to_even);
+        threads[i] = CreateThread(NULL, 0, matrix_calculation_task, &params[i], 0, NULL);
+        if (thread_priorities.size() > 0) 
         {
-            if (threads[i]) 
-            {
-                switch (thread_priorities[i]) {
-                    case 'L':
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_LOWEST);
-                        break;
-                    case 'N':
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_NORMAL);
-                        break;
-                    case 'H':
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_HIGHEST);
-                        break;
-                    default:
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_NORMAL);
-                }
-            }
+            set_priority(threads[i], thread_priorities[i]);
         }
     }
     WaitForMultipleObjects(threads_n, threads, TRUE, INFINITE);
@@ -212,6 +213,12 @@ void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::
     }
     delete[] threads;
     delete[] params;
+}
+
+void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::vector<char> threads_priorities) 
+{
+    bool divide_tasks_due_to_even = false;
+    setup_threads(m, result, threads_n, threads_priorities, divide_tasks_due_to_even);
 }
 
 int main()

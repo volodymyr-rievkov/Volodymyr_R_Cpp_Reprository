@@ -4,16 +4,15 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <thread>
 
 #ifdef __linux__
 #include <gtk/gtk.h>
-#include <pthread.h>
 #elif __WIN32__
 #include <windows.h>
 #endif
 
 using matrix = std::vector<std::vector<int>>;
-
 void show_message(const char* message) 
 {   
     #ifdef __linux__ 
@@ -120,6 +119,7 @@ void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, in
 {
     int rows = m.size();
     int cols = m[0].size();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = start_r; i < end_r; i++)
     {
         for (int j = 0; j < cols; j++)
@@ -142,13 +142,16 @@ void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, in
             result[i][j] = (count > 0) ? (sum / count) : 0;
         }
     }
-    std::cout << "Thread " << thread_id << " is finished." << std::endl;
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end_time - start_time;
+    std::cout << "Thread " << thread_id << " is finished in " << duration.count() << "s.\n";
 }
 
 void calculate_average_even(int thread_id, matrix& m, matrix& result)
 {
     int rows = m.size();
     int cols = m[0].size();
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++)
@@ -174,7 +177,9 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result)
             result[i][j] = (count > 0) ? sum / count : 0;
         }
     }
-    std::cout << "Thread " << thread_id << " is finished." << std::endl;
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end_time - start_time;
+    std::cout << "Thread " << thread_id << " is finished in " << duration.count() << "s.\n";
 }
 
 void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities)
@@ -182,7 +187,6 @@ void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::
     bool divide_tasks_due_to_even = true;
     int rows_n = m.size();
     int rows_per_t = rows_n / threads_n;
-    #ifdef __linux__
     std::vector<std::thread> threads;
     for (int i = 0; i < threads_n; i++)
     {
@@ -190,7 +194,7 @@ void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::
         int end_r = (i == threads_n - 1) ? rows_n : start_r + rows_per_t;
         threads.emplace_back([&, i, start_r, end_r]() 
         {
-            pthread_t thread_handle = thread[i].native_handle(); 
+            pthread_t thread_handle = threads[i].native_handle(); 
             struct sched_param sch_param;
             switch (thread_priorities[i]) 
             {
@@ -225,69 +229,6 @@ void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::
             thread.join();
         }
     }
-    #elif __WIN32__
-       HANDLE* threads = new HANDLE[threads_n];
-    auto* params = new std::tuple<int, matrix*, matrix*, int, int, bool>[threads_n];
-    for (int i = 0; i < threads_n; i++) 
-    {
-        int start_r = i * rows_per_t;
-        int end_row = (i == threads_n - 1) ? rows_n : start_r + rows_per_t;
-        params[i] = std::make_tuple(i + 1, &m, &result, start_r, end_row, divide_tasks_due_to_even);
-        threads[i] = CreateThread
-        (
-            NULL,
-            0,
-            [](LPVOID lpParam) -> DWORD 
-            {
-                auto params = static_cast<std::tuple<int, matrix*, matrix*, int, int, bool>*>(lpParam);
-                int thread_id = std::get<0>(*params);
-                matrix& m = *std::get<1>(*params);
-                matrix& result = *std::get<2>(*params);
-                int start_r = std::get<3>(*params);
-                int end_r = std::get<4>(*params);
-                bool divide_tasks_due_to_even = std::get<5>(*params);
-                if(!divide_tasks_due_to_even)
-                {
-                    calculate_average(thread_id, m, result, start_r, end_r);
-                }
-                else
-                {
-                    calculate_average_even(thread_id, m, result);
-                }
-                return 0;
-            },
-            &params[i],
-            0,
-            NULL
-        );
-        if(thread_priorities.size() > 0)
-        {
-            if (threads[i]) 
-            {
-                switch (thread_priorities[i]) {
-                    case 'L':
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_LOWEST);
-                        break;
-                    case 'N':
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_NORMAL);
-                        break;
-                    case 'H':
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_HIGHEST);
-                        break;
-                    default:
-                        SetThreadPriority(threads[i], THREAD_PRIORITY_NORMAL);
-                }
-            }
-        }
-    }
-    WaitForMultipleObjects(threads_n, threads, TRUE, INFINITE);
-    for (int i = 0; i < threads_n; ++i) 
-    {
-        CloseHandle(threads[i]);
-    }
-    delete[] threads;
-    delete[] params;
-    #endif
 }
 
 int main()
