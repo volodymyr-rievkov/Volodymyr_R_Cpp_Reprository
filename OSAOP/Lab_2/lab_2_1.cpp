@@ -225,12 +225,12 @@ int main()
 {
     const std::string m_file = "matrix.txt";
     const std::string r_file = "result.txt";
-    const int rows = 100;
-    const int cols = 100;
+    const int rows = 1000;
+    const int cols = 1000;
     generate_matrix_into_file(m_file, rows, cols);
     matrix m = read_matrix_from_file(m_file);
     matrix result(rows, std::vector<int>(cols, 0));
-    const int threads_n = 2; 
+    const int threads_n = 100; 
     std::vector<char> thread_priorities = {'L', 'H'};
     auto start_time = std::chrono::high_resolution_clock::now();
     parallel_matrix_calculation(m, result, threads_n, thread_priorities);

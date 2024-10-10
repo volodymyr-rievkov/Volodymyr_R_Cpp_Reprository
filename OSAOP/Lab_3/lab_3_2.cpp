@@ -111,12 +111,15 @@ void write_matrix_to_file(const matrix& m, const std::string& file_name)
 
 void print_info(int thread_n, double time)
 {
+    #ifdef __linux__
+    string message = "Matrix was successfully calculated\n";
+    message += "Number of threads: " + std::to_string(thread_n) + "\n";
+    message += "Time taken: " + std::to_string(time) + "s";
+    show_message(message.c_str());
+    #elif __WIN32__
     std::wstring message = L"Matrix was successfully calculated\n";
     message += L"Number of threads: " + std::to_wstring(thread_n) + L"\n";
     message += L"Time taken: " + std::to_wstring(time) + L"s";
-    #ifdef __linux__
-    show_message(message);
-    #elif __WIN32__
     MessageBoxW(NULL, message.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
     #endif
 }
@@ -146,7 +149,7 @@ void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, in
                 }
             }
             result[i][j] = (count > 0) ? sum / count : 0;
-            t_progress++;
+            t_progress.fetch_add(1);
         }
     }
     auto end_time = std::chrono::high_resolution_clock::now();
@@ -154,7 +157,7 @@ void calculate_average(int thread_id, matrix& m, matrix& result, int start_r, in
     mtx.lock();
     std::cout << "Thread " << thread_id << " is finished in " << duration.count() << "s.\n";
     mtx.unlock();
-    p_progress++;
+    p_progress.fetch_add(1);
 }
 
 void calculate_average_even(int thread_id, matrix& m, matrix& result, std::atomic<int>& p_progress, std::atomic<int>& t_progress) 
@@ -185,7 +188,7 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result, std::atomi
                 }
             }
             result[i][j] = (count > 0) ? sum / count : 0;
-            t_progress++;
+            t_progress.fetch_add(1);
         }
         
     }
@@ -194,7 +197,7 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result, std::atomi
     mtx.lock();
     std::cout << "Thread " << thread_id << " is finished in" << duration.count() << "s.\n";
     mtx.unlock();
-    p_progress++;
+    p_progress.fetch_add(1);
 }
 
 void set_priority(std::thread& thread, char thread_prior)

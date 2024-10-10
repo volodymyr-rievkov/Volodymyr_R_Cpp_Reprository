@@ -105,12 +105,15 @@ void write_matrix_to_file(const matrix& m, const std::string& file_name)
 
 void print_info(int thread_n, double time)
 {
+    #ifdef __linux__
+    string message = "Matrix was successfully calculated\n";
+    message += "Number of threads: " + std::to_string(thread_n) + "\n";
+    message += "Time taken: " + std::to_string(time) + "s";
+    show_message(message.c_str());
+    #elif __WIN32__
     std::wstring message = L"Matrix was successfully calculated\n";
     message += L"Number of threads: " + std::to_wstring(thread_n) + L"\n";
     message += L"Time taken: " + std::to_wstring(time) + L"s";
-    #ifdef __linux__
-    show_message(message);
-    #elif __WIN32__
     MessageBoxW(NULL, message.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
     #endif
 }
@@ -180,6 +183,69 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result)
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
     std::cout << "Thread " << thread_id << " is finished in " << duration.count() << "s.\n";
+}
+
+void set_priority(std::thread& thread, char thread_prior)
+{
+    sched_param sch_params;
+    switch (thread_prior) 
+    {
+        case 'L':
+            sch_params.sched_priority = 10;
+            break;
+        case 'N':
+               sch_params.sched_priority = 20;
+               break;
+        case 'H':
+            sch_params.sched_priority = 30;
+            break;
+        default:
+             sch_params.sched_priority = 20;
+    }
+    pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &sch_params);
+}
+
+void matrix_calculation_task(int thread_id, matrix& m, matrix& result, int start_r, int end_r, int elements, bool divide_tasks) 
+{
+    if (!divide_tasks) 
+    {
+        calculate_average(thread_id, m, result, start_r, end_r);
+    } 
+    else 
+    {
+        calculate_average_even(thread_id, m, result);
+    }
+}
+
+void setup_threads(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities, bool divide_tasks_due_to_even) 
+{
+    std::vector<std::thread> threads;
+    int rows_n = m.size();
+    int cols_n = m[0].size();
+    for (int i = 0; i < threads_n; i++) 
+    {
+        int rows_per_t = rows_n / threads_n;
+        int start_row = i * rows_per_t;
+        int end_row = (i == threads_n - 1) ? rows_n : start_row + rows_per_t;
+        int elements_n = rows_per_t * cols_n;
+        threads.emplace_back([&, i]() {
+            matrix_calculation_task(i + 1, m, result, start_row, end_row, elements_n, divide_tasks_due_to_even);
+        });
+        if (thread_priorities.size() > 0) 
+        {
+            set_priority(threads[i], thread_priorities[i]);
+        }
+    }
+    for (auto& thread : threads) 
+    {
+        thread.join();
+    }
+}
+
+void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::vector<char> threads_priorities, int max_concurrent_threads) 
+{
+    bool divide_tasks_due_to_even = false;
+    setup_threads(m, result, threads_n, threads_priorities, divide_tasks_due_to_even);
 }
 
 void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities)
