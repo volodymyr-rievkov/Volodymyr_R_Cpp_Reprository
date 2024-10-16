@@ -151,7 +151,6 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result, LONG& p_pr
             result[i][j] = (count > 0) ? sum / count : 0;
             InterlockedIncrement(&t_progress);
         }
-        
     }
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end_time - start_time;
@@ -307,8 +306,8 @@ int main()
     const int rows = 1000;
     const int cols = 1000;
 
-    const int threads_n = 3;
-    const int max_concurrent_threads = 1;
+    const int threads_n = 10;
+    const int max_concurrent_threads = 2;
     std::vector<char> threads_priorities = {'L', 'H', 'N'};
 
     generate_matrix_into_file(m_file, rows, cols);

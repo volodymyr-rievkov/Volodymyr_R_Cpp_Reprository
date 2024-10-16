@@ -6,12 +6,12 @@
 #include<mutex>
 #include<semaphore.h>
 #include<atomic>
-#include<pthread.h>
-#include<unistd.h>
+#include<thread>
 
 #ifdef __linux__
 #include <gtk/gtk.h>
-
+#elif __WIN32__
+#include <windows.h>
 #endif
 
 std::mutex mtx;
@@ -37,7 +37,9 @@ void generate_matrix_into_file(const std::string& file_name, int rows, int cols)
     std::ofstream out_file(file_name);
     if (!out_file)
     {
-        #ifdef __linux__
+        #ifdef __WIN32__
+        MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
+        #elif __linux__
         show_message("Error: File cannot be opened!");
         #endif
         return;
@@ -75,7 +77,9 @@ matrix read_matrix_from_file(const std::string& file_name)
     }
     else
     {
-        #ifdef __linux__
+        #ifdef __WIN32__
+        MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
+        #elif __linux__
         show_message("Error: File cannot be opened!");
         #endif        
     }
@@ -87,7 +91,9 @@ void write_matrix_to_file(const matrix& m, const std::string& file_name)
     std::ofstream out_file(file_name);
     if (!out_file)
     {
-        #ifdef __linux__
+        #ifdef __WIN32__
+        MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
+        #elif __linux__
         show_message("Error: File cannot be opened!");
         #endif
         return;
@@ -106,10 +112,15 @@ void write_matrix_to_file(const matrix& m, const std::string& file_name)
 void print_info(int thread_n, double time)
 {
     #ifdef __linux__
-    std::string message = "Matrix was successfully calculated\n";
+    string message = "Matrix was successfully calculated\n";
     message += "Number of threads: " + std::to_string(thread_n) + "\n";
     message += "Time taken: " + std::to_string(time) + "s";
     show_message(message.c_str());
+    #elif __WIN32__
+    std::wstring message = L"Matrix was successfully calculated\n";
+    message += L"Number of threads: " + std::to_wstring(thread_n) + L"\n";
+    message += L"Time taken: " + std::to_wstring(time) + L"s";
+    MessageBoxW(NULL, message.c_str(), L"Information", MB_OK | MB_ICONINFORMATION);
     #endif
 }
 
@@ -189,7 +200,7 @@ void calculate_average_even(int thread_id, matrix& m, matrix& result, std::atomi
     p_progress.fetch_add(1);
 }
 
-void set_priority(pthread_t& thread, char thread_prior)
+void set_priority(std::thread& thread, char thread_prior)
 {
     sched_param sch_params;
     switch (thread_prior) 
@@ -206,65 +217,42 @@ void set_priority(pthread_t& thread, char thread_prior)
         default:
              sch_params.sched_priority = 20;
     }
-    pthread_setschedparam(thread, SCHED_FIFO, &sch_params);
+    pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &sch_params);
 }
 
-void* monitor_process(void* args) 
+void monitor_process(int total_threads, std::atomic<int>& progress) 
 {
-    auto* data = static_cast<std::tuple<int, int, std::atomic<int>*>*>(args);
-    int total_threads = std::get<0>(*data);
-    int thread_id = std::get<1>(*data);
-    std::atomic<int>& progress = *std::get<2>(*data);
     while (progress < total_threads) 
     {
         double percentage = (static_cast<double>(progress) / total_threads) * 100.0;
         mtx.lock();
         std::cout << "Process progress: " << percentage << "%\n";
         mtx.unlock();
-        sleep(1);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     mtx.lock();
     std::cout << "Process progress: 100.00%\n";
     mtx.unlock();
-    return nullptr;
 }
 
-void* monitor_thread(void* args) 
+void monitor_thread(int total_elements, int thread_id, std::atomic<int>& progress) 
 {
-    auto* data = static_cast<std::tuple<int, int, std::atomic<int>*>*>(args);
-    int total_elements = std::get<0>(*data);
-    int thread_id = std::get<1>(*data);
-    std::atomic<int>& progress = *std::get<2>(*data);
-
     while (progress < total_elements) 
     {
         double percentage = (static_cast<double>(progress) / total_elements) * 100.0;
         mtx.lock();
         std::cout << "Thread "<< thread_id << " progress: " << percentage << "%\n";
         mtx.unlock();
-        sleep(1);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     mtx.lock();
     std::cout << "Thread " << thread_id << " progress: 100.00%\n";
     mtx.unlock();
-    return nullptr;
 }
 
-void* matrix_calculation_task(void* args) 
+void matrix_calculation_task(int thread_id, matrix& m, matrix& result, int start_r, int end_r, int elements, bool divide_tasks, std::atomic<int>& p_progress, std::atomic<int>& t_progress) 
 {
-    auto* data = static_cast<std::tuple<int, int, int, matrix*, matrix*, bool, std::atomic<int>*, std::atomic<int>*, int>*>(args);
-    int thread_id = std::get<0>(*data);
-    int start_r = std::get<1>(*data);
-    int end_r = std::get<2>(*data);
-    matrix& m = *std::get<3>(*data);
-    matrix& result = *std::get<4>(*data);
-    bool divide_tasks = std::get<5>(*data);
-    std::atomic<int>& p_progress = *std::get<6>(*data);
-    std::atomic<int>& t_progress = *std::get<7>(*data);
-    int elements = std::get<8>(*data);
-    pthread_t monitor_thread_t;
-    auto* params = new std::tuple(elements, thread_id, ref(t_progress));
-    pthread_create(&monitor_thread_t, nullptr, monitor_thread, params);
+    std::thread monitor_thread_t(monitor_thread, elements, thread_id, ref(t_progress));
     if (!divide_tasks) 
     {
         calculate_average(thread_id, m, result, start_r, end_r, ref(p_progress), ref(t_progress));
@@ -273,31 +261,28 @@ void* matrix_calculation_task(void* args)
     {
         calculate_average_even(thread_id, m, result, ref(p_progress), ref(t_progress));
     }
-    pthread_join(monitor_thread_t, nullptr);
-    delete params;
+    monitor_thread_t.join();            
     sem_post(&semaphore); 
-    return nullptr;
 }
 
 void setup_threads(matrix& m, matrix& result, int threads_n, std::vector<char> thread_priorities, bool divide_tasks_due_to_even, std::atomic<int>& process_progress, int max_concurrent_threads) 
 {
     sem_init(&semaphore, 0, max_concurrent_threads);
-    std::vector<pthread_t> threads;
+    std::vector<std::thread> threads;
     std::atomic<int> thread_progress = 0;
     int rows_n = m.size();
     int cols_n = m[0].size();
     for (int i = 0; i < threads_n; i++) 
     {
-        sem_wait(&semaphore); 
+        sem_wait(&semaphore);
         int rows_per_t = rows_n / threads_n;
         int start_row = i * rows_per_t;
         int end_row = (i == threads_n - 1) ? rows_n : start_row + rows_per_t;
         int elements_n = rows_per_t * cols_n;
         thread_progress = 0;
-        auto* params = new std::tuple(i + 1, start_row, end_row, &m, &result, divide_tasks_due_to_even, ref(process_progress), ref(thread_progress), elements_n);
-        pthread_t thread;
-        pthread_create(&thread, nullptr, matrix_calculation_task, params);
-        threads.push_back(thread);
+        threads.emplace_back([&, i]() { 
+            matrix_calculation_task(i + 1, m, result, start_row, end_row, elements_n, divide_tasks_due_to_even, ref(process_progress), ref(thread_progress));
+        });
         if (thread_priorities.size() > 0) 
         {
             set_priority(threads[i], thread_priorities[i]);
@@ -305,7 +290,7 @@ void setup_threads(matrix& m, matrix& result, int threads_n, std::vector<char> t
     }
     for (auto& thread : threads) 
     {
-        pthread_join(thread, NULL);
+        thread.join();
     }
     sem_destroy(&semaphore);
 }
@@ -314,12 +299,9 @@ void parallel_matrix_calculation(matrix& m, matrix& result, int threads_n, std::
 {
     std::atomic<int> process_progress = 0;
     bool divide_tasks_due_to_even = false;
-    auto* params = new std::tuple(threads_n, ref(process_progress));
-    pthread_t monitor_process_t;
-    pthread_create(&monitor_process_t, nullptr, monitor_process, params);
+    std::thread monitor_process_t(monitor_process, threads_n, ref(process_progress));
     setup_threads(m, result, threads_n, threads_priorities, divide_tasks_due_to_even, ref(process_progress), max_concurrent_threads);
-    pthread_join(monitor_process_t, NULL);
-    delete params; 
+    monitor_process_t.join();
 }
 
 int main()
@@ -330,7 +312,7 @@ int main()
     const int rows = 1000;
     const int cols = 1000;
 
-    const int threads_n = 3;
+    const int threads_n = 10;
     const int max_concurrent_threads = 2;
     std::vector<char> threads_priorities = {'L', 'H', 'N'};
 
