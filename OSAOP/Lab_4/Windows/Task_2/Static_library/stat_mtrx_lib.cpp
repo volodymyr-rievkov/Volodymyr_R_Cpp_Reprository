@@ -7,8 +7,8 @@
 #include<windows.h>
 #include<vector>
 
-HANDLE semaphore;
-CRITICAL_SECTION cs;
+static HANDLE semaphore;
+static CRITICAL_SECTION cs;
 
 using matrix = std::vector<std::vector<int>>;
 

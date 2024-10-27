@@ -11,22 +11,16 @@ typedef void (*write_matrix_to_file_func)(matrix&, const std::string&);
 typedef void (*parallel_matrix_calculation_func)(matrix&, matrix&, int, std::vector<char>, int);
 typedef void (*print_info_func)(int, double);
 
-int main() {
-    HINSTANCE hinstLib;
-    generate_matrix_into_file_func generate_matrix_into_file;
-    read_matrix_from_file_func read_matrix_from_file;
-    write_matrix_to_file_func write_matrix_to_file;
-    parallel_matrix_calculation_func parallel_matrix_calculation;
-    print_info_func print_info;
-
-    hinstLib = LoadLibrary(TEXT("D:\\Programming\\C,C++Applications\\OSAOP\\Lab_4\\Task_1\\Dynaimc_library\\dyn_mtrx_lib.dll"));
+int main() 
+{
+    HINSTANCE hinstLib = LoadLibrary(TEXT("D:\\Programming\\C,C++Applications\\OSAOP\\Lab_4\\Windows\\Task_1\\Dynaimc_library\\dyn_mtrx_lib.dll"));
     if (hinstLib != NULL) 
     {
-        generate_matrix_into_file = (generate_matrix_into_file_func)GetProcAddress(hinstLib, "generate_matrix_into_file");
-        read_matrix_from_file = (read_matrix_from_file_func)GetProcAddress(hinstLib, "read_matrix_from_file");
-        write_matrix_to_file = (write_matrix_to_file_func)GetProcAddress(hinstLib, "write_matrix_to_file");
-        parallel_matrix_calculation = (parallel_matrix_calculation_func)GetProcAddress(hinstLib, "parallel_matrix_calculation");
-        print_info = (print_info_func)GetProcAddress(hinstLib, "print_info");
+        generate_matrix_into_file_func generate_matrix_into_file = (generate_matrix_into_file_func)GetProcAddress(hinstLib, "generate_matrix_into_file");
+        read_matrix_from_file_func read_matrix_from_file = (read_matrix_from_file_func)GetProcAddress(hinstLib, "read_matrix_from_file");
+        write_matrix_to_file_func write_matrix_to_file = (write_matrix_to_file_func)GetProcAddress(hinstLib, "write_matrix_to_file");
+        parallel_matrix_calculation_func parallel_matrix_calculation = (parallel_matrix_calculation_func)GetProcAddress(hinstLib, "parallel_matrix_calculation");
+        print_info_func print_info = (print_info_func)GetProcAddress(hinstLib, "print_info");
 
         if (generate_matrix_into_file && read_matrix_from_file && write_matrix_to_file && parallel_matrix_calculation && print_info) 
         {
@@ -38,7 +32,7 @@ int main() {
 
             const int threads_n = 10;
             const int max_concurrent_threads = 2;
-            std::vector<char> threads_priorities = {'L', 'H', 'N'};
+            std::vector<char> threads_priorities = {};
 
             generate_matrix_into_file(m_file, rows, cols);
             matrix m = read_matrix_from_file(m_file);

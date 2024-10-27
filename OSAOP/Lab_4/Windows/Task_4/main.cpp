@@ -5,13 +5,10 @@ typedef void (*run_calculation_func)(int, int, int, int);
 
 int main() 
 {
-    HINSTANCE hinstLib;
-    run_calculation_func run_calculation;
-
-    hinstLib = LoadLibrary(TEXT("D:\\Programming\\C,C++Applications\\OSAOP\\Lab_4\\Task_1\\Dynaimc_library\\dyn_mtrx_lib.dll"));
+    HINSTANCE hinstLib = LoadLibrary(TEXT("D:\\Programming\\C,C++Applications\\OSAOP\\Lab_4\\Windows\\Task_1\\Dynaimc_library\\dyn_mtrx_lib.dll"));
     if (hinstLib != NULL) 
     {
-        run_calculation = (run_calculation_func)GetProcAddress(hinstLib, "run_c");
+        run_calculation_func run_calculation = (run_calculation_func)GetProcAddress(hinstLib, "run_c");
         if(run_calculation)
         {
             run_calculation(1000, 1000, 10, 2);
