@@ -13,7 +13,6 @@
 
 #ifdef __linux__
 #include <gtk/gtk.h>
-
 #endif
 
 __attribute__((visibility("hidden")))  std::mutex mtx;
