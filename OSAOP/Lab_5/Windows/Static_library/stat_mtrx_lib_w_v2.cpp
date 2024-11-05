@@ -52,7 +52,7 @@ matrix read_matrix_from_file(const std::string& file_name, const size_t rows, co
         return m; 
     }
 
-    HANDLE file_map_h = CreateFileMappingA(
+    HANDLE file_map_h = CreateFileMapping(
         file_h,                          
         NULL,                            
         PAGE_READONLY,                   
