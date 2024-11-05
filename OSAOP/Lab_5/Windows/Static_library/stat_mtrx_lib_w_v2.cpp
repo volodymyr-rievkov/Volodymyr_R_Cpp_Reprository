@@ -46,7 +46,7 @@ matrix read_matrix_from_file(const std::string& file_name, const size_t rows, co
         NULL                             
     );
 
-    if (file_h == NULL) 
+    if (file_h == INVALID_HANDLE_VALUE) 
     {
         MessageBoxW(NULL, L"Error: File cannot be opened!", L"Error", MB_OK | MB_ICONERROR);
         return m; 
