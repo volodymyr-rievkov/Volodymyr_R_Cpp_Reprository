@@ -5,9 +5,12 @@
 #include"Battelfield.hpp"
 #include"BattlefieldCreator.hpp"
 #include"ConcreateBdCreator.hpp"
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 void Game::start()
 {
+    // turn_on_song();
     SetConsoleOutputCP(CP_UTF8);
     print_title();
     set_battlefield();
@@ -17,6 +20,7 @@ void Game::start()
     print_start();
     battlefield->start();
     finish();
+    // turn_off_song();
 }
 
 void Game::print_start()
@@ -179,6 +183,17 @@ void Game::finish()
                                                                                                         ░     
     )" << std::endl << std::endl;
     Character::change_font_colour(7);
+}
+
+void Game::turn_on_song()
+{
+    mciSendStringA(("open \"" + std::string(mp3_file_path) + "\" type mpegvideo alias mp3").c_str(), NULL, 0, NULL);
+    mciSendStringA("play mp3", NULL, 0, NULL);
+}
+
+void Game::turn_off_song()
+{
+    mciSendStringA("close mp3", NULL, 0, NULL);
 }
 
 Game::~Game()
