@@ -1,0 +1,5 @@
+Lab №3: Loading and Synchronization in OpenMP.
+Group: AI-21.
+Rievkov Volodymyr Volodymyrovych.
+Option №13.
+Task: Multi-thread integral calculation.

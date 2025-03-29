@@ -1,0 +1,199 @@
+Lab №3: Loading and Synchronization in OpenMP.
+Group: AI-21.
+Rievkov Volodymyr Volodymyrovych.
+Option №13.
+Task: Multi-thread integral calculation.
+----- Threads count: 1 -----
+----- Step: 0.000020 -----
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Result: 1.788268
+Total time: 0.003000
+----- Threads count: 5 -----
+----- Step: 0.000020 -----
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Thread 1 failed to enter closed section.
+Thread 4 entered closed section.
+Thread 4 exited closed section.
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 2 entered closed section.
+Thread 2 exited closed section.
+Result: 1.788268
+Total time: 0.003000
+----- Threads count: 10 -----
+----- Step: 0.000020 -----
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 9 entered closed section.
+Thread 9 exited closed section.
+Thread 6 entered closed section.
+Thread 6 exited closed section.
+Thread 2 failed to enter closed section.
+Thread 5 failed to enter closed section.
+Thread 0 failed to enter closed section.
+Thread 4 failed to enter closed section.
+Thread 1 failed to enter closed section.
+Thread 8 entered closed section.
+Thread 8 exited closed section.
+Thread 7 entered closed section.
+Thread 7 exited closed section.
+Result: 1.788268
+Total time: 0.002000
+----- Threads count: 15 -----
+----- Step: 0.000020 -----
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Thread 13 entered closed section.
+Thread 13 exited closed section.
+Thread 12 entered closed section.
+Thread 12 exited closed section.
+Thread 2 entered closed section.
+Thread 2 exited closed section.
+Thread 8 entered closed section.
+Thread 8 exited closed section.
+Thread 1 entered closed section.
+Thread 1 exited closed section.
+Thread 6 failed to enter closed section.
+Thread 10 failed to enter closed section.
+Thread 7 failed to enter closed section.
+Thread 4 failed to enter closed section.
+Thread 11 failed to enter closed section.
+Thread 5 entered closed section.
+Thread 5 exited closed section.
+Thread 14 failed to enter closed section.
+Thread 9 failed to enter closed section.
+Thread 3 failed to enter closed section.
+Result: 1.788268
+Total time: 0.002000
+----- Threads count: 1 -----
+----- Step: 0.000002 -----
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Result: 1.788311
+Total time: 0.027000
+----- Threads count: 5 -----
+----- Step: 0.000002 -----
+Thread 2 entered closed section.
+Thread 2 exited closed section.
+Thread 1 entered closed section.
+Thread 1 exited closed section.
+Thread 3 failed to enter closed section.
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Thread 4 entered closed section.
+Thread 4 exited closed section.
+Result: 1.788311
+Total time: 0.008000
+----- Threads count: 10 -----
+----- Step: 0.000002 -----
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Thread 6 entered closed section.
+Thread 6 exited closed section.
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 8 failed to enter closed section.
+Thread 9 entered closed section.
+Thread 9 exited closed section.
+Thread 5 entered closed section.
+Thread 5 exited closed section.
+Thread 4 failed to enter closed section.
+Thread 7 entered closed section.
+Thread 7 exited closed section.
+Thread 1 entered closed section.
+Thread 1 exited closed section.
+Thread 2 failed to enter closed section.
+Result: 1.788311
+Total time: 0.006000
+----- Threads count: 15 -----
+----- Step: 0.000002 -----
+Thread 1 entered closed section.
+Thread 1 exited closed section.
+Thread 14 entered closed section.
+Thread 14 exited closed section.
+Thread 13 entered closed section.
+Thread 13 exited closed section.
+Thread 6 entered closed section.
+Thread 6 exited closed section.
+Thread 10 entered closed section.
+Thread 10 exited closed section.
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 9 entered closed section.
+Thread 9 exited closed section.
+Thread 8 failed to enter closed section.
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Thread 11 entered closed section.
+Thread 11 exited closed section.
+Thread 5 entered closed section.
+Thread 5 exited closed section.
+Thread 4 failed to enter closed section.
+Thread 12 failed to enter closed section.
+Thread 7 entered closed section.
+Thread 7 exited closed section.
+Thread 2 failed to enter closed section.
+Result: 1.788311
+Total time: 0.007000
+----- Threads count: 1 -----
+----- Step: 0.000000 -----
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Result: 1.788311
+Total time: 0.223000
+----- Threads count: 5 -----
+----- Step: 0.000000 -----
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 0 entered closed section.
+Thread 0 exited closed section.
+Thread 2 failed to enter closed section.
+Thread 1 entered closed section.
+Thread 1 exited closed section.
+Thread 4 entered closed section.
+Thread 4 exited closed section.
+Result: 1.788311
+Total time: 0.096000
+----- Threads count: 10 -----
+----- Step: 0.000000 -----
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 4 failed to enter closed section.
+Thread 6 failed to enter closed section.
+Thread 9 failed to enter closed section.
+Thread 7 entered closed section.
+Thread 7 exited closed section.
+Thread 0 failed to enter closed section.
+Thread 2 failed to enter closed section.
+Thread 8 failed to enter closed section.
+Thread 1 failed to enter closed section.
+Thread 5 entered closed section.
+Thread 5 exited closed section.
+Result: 1.788311
+Total time: 0.061000
+----- Threads count: 15 -----
+----- Step: 0.000000 -----
+Thread 2 entered closed section.
+Thread 2 exited closed section.
+Thread 9 entered closed section.
+Thread 9 exited closed section.
+Thread 0 failed to enter closed section.
+Thread 3 entered closed section.
+Thread 3 exited closed section.
+Thread 10 entered closed section.
+Thread 10 exited closed section.
+Thread 1 failed to enter closed section.
+Thread 13 failed to enter closed section.
+Thread 11 failed to enter closed section.
+Thread 6 failed to enter closed section.
+Thread 4 failed to enter closed section.
+Thread 12 failed to enter closed section.
+Thread 8 failed to enter closed section.
+Thread 5 failed to enter closed section.
+Thread 7 entered closed section.
+Thread 7 exited closed section.
+Thread 14 failed to enter closed section.
+Result: 1.788311
+Total time: 0.053000
